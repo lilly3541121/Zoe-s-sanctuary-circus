@@ -19,6 +19,26 @@ messages_index = cache.get("messages_index", {})
 # Track relation counts
 relation_counts = defaultdict(int)  # (src, tgt, label) -> count
 
+
+def norm_rel(rel):
+    """Normalise any relation dict shape into (src, tgt, label).
+
+    The pipeline mixes three shapes across extractor versions:
+      - v2: {subject, predicate, object}
+      - v1: {source, target, label}
+      - qwen: {source, target, type}
+    Return a (src, tgt, label) tuple, or None if unusable.
+    """
+    if not isinstance(rel, dict):
+        return None
+    src = (rel.get("source") or rel.get("subject") or "").strip().lower()
+    tgt = (rel.get("target") or rel.get("object") or "").strip().lower()
+    label = (rel.get("type") or rel.get("label") or rel.get("predicate") or "related_to").strip().lower()
+    if not src or not tgt or len(src) < 2 or len(tgt) < 2:
+        return None
+    return (src, tgt, label)
+
+
 # Load and process each LLM cache
 cache_files = [
     ("qwen", "llm_cache_qwen.json"),
@@ -57,14 +77,10 @@ for source_name, fname in cache_files:
 
         # Relations
         for rel in data.get("relations", []):
-            if not isinstance(rel, dict):
+            norm = norm_rel(rel)
+            if not norm:
                 continue
-            src = rel.get("source", "").strip().lower()
-            tgt = rel.get("target", "").strip().lower()
-            # Handle both type (v2) and label (v1)
-            label = rel.get("type", rel.get("label", "related_to")).strip().lower()
-            if not src or not tgt or len(src) < 2 or len(tgt) < 2:
-                continue
+            src, tgt, label = norm
             key = (src, tgt, label)
             relation_counts[key] += 1
 
@@ -88,11 +104,9 @@ for source_name, fname in cache_files:
                 elif isinstance(r, str):
                     existing_rels_for_msg.add(r)
             for rel in data.get("relations", []):
-                if isinstance(rel, dict):
-                    src = rel.get("source", "").strip().lower()
-                    tgt = rel.get("target", "").strip().lower()
-                    label = rel.get("type", rel.get("label", "related_to")).strip().lower()
-                    existing_rels_for_msg.add((src, tgt, label))
+                norm = norm_rel(rel)
+                if norm:
+                    existing_rels_for_msg.add(norm)
             messages_index[msg_key]["relation_ids"] = [
                 {"source": s, "target": t, "type": l} for (s, t, l) in existing_rels_for_msg
                 if s and t
