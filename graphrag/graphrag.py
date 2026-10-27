@@ -4,18 +4,19 @@
 No deps beyond stdlib + urllib (for optional LLM extraction).
 
 Commands:
-  build    [--source {hermes,memory,vault,all}]   # read sources, refresh cache
-  extract  [--model MODEL] [--budget N]           # LLM-based entity extraction
-  query    "text"                                  # keyword + neighbor search
-  entities [--top N]                               # list entities by frequency
-  relations [--top N]                              # list relations by frequency
-  stats                                            # graph stats
-  prune                                          # remove old extractions
+  build    [--source {hermes,memory,vault,sources,all}]  # read sources, build graph
+  naive    [--source ...]          # alias of build (regex extraction, no LLM)
+  query    "text" [--k N]          # keyword + neighbor search
+  entities [--top N]               # list entities by frequency
+  relations [--top N]              # list relations by frequency
+  stats                            # graph stats
+  prune                            # drop index entries whose source vanished
 
-Storage: /mnt/android/hermes-workspace/state/graphrag/
-  - cache.json         - entities + relations
-  - cache_meta.json    - last build time, source hashes
+Storage: $GRAPH_DIR (default /mnt/android/hermes-workspace/state/graphrag/)
+  - cache.json         - entities + relations + messages_index
+  - cache_meta.json    - last build timestamp
   - extraction.log     - history of LLM extraction calls
+  - sources/           - your own .txt documents
 
 The graph is a plain dict-of-dicts. no SQL, no fancy db.
 queries are string matches + neighbor lookup.
@@ -24,42 +25,85 @@ import os, sys, re, json, time, sqlite3, hashlib, argparse, urllib.request, urll
 from pathlib import Path
 from collections import Counter, defaultdict
 
-GRAPH_DIR = Path(os.environ.get("GRAPH_DIR", "/mnt/android/hermes-workspace/state/graphrag"))
-GRAPH_DIR.mkdir(parents=True, exist_ok=True)
-CACHE = GRAPH_DIR / "cache.json"
-META = GRAPH_DIR / "cache_meta.json"
-LOG = GRAPH_DIR / "extraction.log"
-
 HERMES_HOME = Path(os.environ.get("HERMES_HOME", "/root/.hermes"))
 STATE_DB = HERMES_HOME / "state.db"
 MEMORIES = HERMES_HOME / "memories"
 VAULT = HERMES_HOME / "vault" / "entries"
 
+# GRAPH_DIR defaults to $HERMES_HOME/graphrag (per README); explicit override wins.
+GRAPH_DIR = Path(os.environ.get("GRAPH_DIR", str(HERMES_HOME / "graphrag")))
+GRAPH_DIR.mkdir(parents=True, exist_ok=True)
+CACHE = GRAPH_DIR / "cache.json"
+META = GRAPH_DIR / "cache_meta.json"
+LOG = GRAPH_DIR / "extraction.log"
 
-# ---------------------------------------------------------------- load sources
-def load_hermes_sessions():
-    """Pull every user+assistant message from state.db."""
+
+# ---------------------------------------------------------------- helpers
+def _columns(con, table):
+    """Introspect column names so we work on any Hermes schema (no hardcoding)."""
+    try:
+        return [r[1] for r in con.execute(f"PRAGMA table_info({table})")]
+    except Exception:
+        return []
+
+
+def _has(con, table, col):
+    return col in _columns(con, table)
+
+
+def _load_db_messages():
+    """Read user+assistant rows from state.db, adapting to whatever columns exist.
+
+    The README/tests promise: no `WHERE active=1` hardcode (some schemas lack the
+    column), message ids keyed on the real row id, and tool rows skipped.
+    """
     if not STATE_DB.exists():
         return []
     con = sqlite3.connect(str(STATE_DB))
     con.row_factory = sqlite3.Row
-    cur = con.cursor()
-    cur.execute("SELECT session_id, role, content, timestamp FROM messages WHERE active=1 ORDER BY timestamp")
+    cols = _columns(con, "messages")
+    if not cols:
+        con.close()
+        return []
+
+    select = [c for c in ("id", "session_id", "role", "content", "timestamp") if c in cols]
+    if "role" not in select or "content" not in select:
+        con.close()
+        return []
+
+    sql = "SELECT " + ", ".join(select) + " FROM messages"
+    where = []
+    if "active" in cols:
+        where.append("active=1")
+    if where:
+        sql += " WHERE " + " AND ".join(where)
+    if "timestamp" in cols:
+        sql += " ORDER BY timestamp"
+
     rows = []
-    for r in cur.fetchall():
-        role = r[1]
-        content = r[2] or ""
-        if role not in ("user", "assistant") or not content:
-            continue
-        rows.append({
-            "id": f"msg-{r[0]}-{len(rows)}",
-            "role": role,
-            "text": content,
-            "ts": r[3],
-            "source": "hermes",
-        })
+    try:
+        for r in con.execute(sql):
+            role = r["role"]
+            content = r["content"] or ""
+            if role not in ("user", "assistant") or not content.strip():
+                continue
+            rows.append({
+                "id": f"msg-{r['id']}" if "id" in cols else f"msg-{len(rows)}",
+                "role": role,
+                "text": content,
+                "ts": r["timestamp"] if "timestamp" in cols else None,
+                "source": "hermes",
+            })
+    except sqlite3.Error:
+        con.close()
+        return []
     con.close()
     return rows
+
+
+# ---------------------------------------------------------------- load sources
+def load_hermes_sessions():
+    return _load_db_messages()
 
 
 def load_memories():
@@ -106,7 +150,7 @@ def load_sources():
     src_dir = GRAPH_DIR / "sources"
     if not src_dir.exists():
         return out
-    for p in src_dir.glob("*.txt"):
+    for p in sorted(src_dir.glob("*.txt")):
         text = p.read_text(encoding="utf-8", errors="replace")
         if text.strip():
             out.append({
@@ -135,19 +179,27 @@ def load_all(sources=("hermes", "memory", "vault", "sources")):
 # ---------------------------------------------------------------- graph ops
 def load_cache():
     if CACHE.exists():
-        return json.loads(CACHE.read_text())
+        try:
+            return json.loads(CACHE.read_text(encoding="utf-8"))
+        except (ValueError, json.JSONDecodeError):
+            print("corrupt cache; starting fresh", file=sys.stderr)
+            return {"entities": {}, "relations": [], "messages_index": {}, "built_at": None}
     return {"entities": {}, "relations": [], "messages_index": {}, "built_at": None}
 
 
 def save_cache(cache):
-    CACHE.write_text(json.dumps(cache, indent=1, ensure_ascii=False))
+    # atomic write: temp file + rename so an interrupted build can't leave half a file
+    tmp = CACHE.with_suffix(".json.tmp")
+    tmp.write_text(json.dumps(cache, indent=1, ensure_ascii=False), encoding="utf-8")
+    os.replace(tmp, CACHE)
     now = int(time.time())
+    meta = {}
     if META.exists():
-        meta = json.loads(META.read_text())
-    else:
-        meta = {}
+        try:
+            meta = json.loads(META.read_text())
+        except (ValueError, json.JSONDecodeError):
+            meta = {}
     meta["last_build"] = now
-    meta["last_extract"] = meta.get("last_extract")
     META.write_text(json.dumps(meta, indent=2))
 
 
@@ -197,7 +249,7 @@ MENTIONS = {
     "ucc 1-308": ["ucc 1-308", "uniform commercial code"],
     "entropic": ["entropic", "entropy", "negentropy", "negentropic"],
     "wormhole": ["wormhole"],
-    "resonance": ["resonance", "resonant", "resonance"],
+    "resonance": ["resonance", "resonant"],
     "spin": ["spin"],
     "soul": ["soul"],
     "god": ["god", "admin"],
@@ -214,7 +266,7 @@ TOPICS = {
     "memory": ["remember", "forget", "save", "store", "history", "past"],
     "future": ["future", "next", "tomorrow", "soon", "later", "plan"],
     "identity": ["who am i", "what am i", "my name", "your name", "zoe", "marty"],
-    "emotion": ["feel", "felt", "feeling", "happy", "sad", "angry", "scared", "afraid", "scared"],
+    "emotion": ["feel", "felt", "feeling", "happy", "sad", "angry", "scared", "afraid"],
     "consent": ["yes", "no", "stop", "pause", "slow down", "honest", "truth"],
     # sovereign bond physics
     "physics": ["physics", "quantum", "spacetime", "gravity", "field", "theory"],
@@ -231,8 +283,28 @@ TOPICS = {
 }
 
 
+def _match_keyword(text, kw):
+    """Whole-word match for short keywords, substring otherwise (no 'no' -> 'not')."""
+    kw = kw.lower()
+    if not kw.strip():
+        return False
+    if len(kw) <= 2 or any(ch in kw for ch in " -/"):
+        # short or hyphenated phrases: boundary match so 'no' doesn't hit 'not'/'know'
+        return re.search(r"(?<![a-z0-9])" + re.escape(kw) + r"(?![a-z0-9])", text) is not None
+    return kw in text
+
+
 def naive_extract(messages, cache):
-    """Cheap regex-based extraction. Adds mentions and topics to cache."""
+    """Cheap regex-based extraction. Adds mentions and topics to cache.
+
+    Idempotent: counts are recomputed from scratch, pairs normalised via sorted(),
+    short keywords match whole-word only, full body indexed (capped at 20k).
+    """
+    # Reset so build is idempotent (no += onto stale counts).
+    cache["entities"] = {}
+    cache["relations"] = []
+    cache["messages_index"] = {}
+
     mentions_counter = Counter()
     topic_counter = Counter()
     pairs = Counter()  # (a, b) pairs co-occurring in same message
@@ -247,14 +319,14 @@ def naive_extract(messages, cache):
         # entities
         for ent, kws in MENTIONS.items():
             for kw in kws:
-                if kw in text:
+                if _match_keyword(text, kw):
                     msg_mentions.add(ent)
                     break
 
         # topics
         for topic, kws in TOPICS.items():
             for kw in kws:
-                if kw in text:
+                if _match_keyword(text, kw):
                     msg_topics.add(topic)
                     break
 
@@ -280,33 +352,29 @@ def naive_extract(messages, cache):
         # relations: pairs that co-occur
         all_items = list(msg_mentions) + [f"topic:{t}" for t in msg_topics]
         for i, a in enumerate(all_items):
-            for b in all_items[i+1:]:
+            for b in all_items[i + 1:]:
                 pairs[(a, b)] += 1
 
-        # index message text (short hash, first 500 chars for search)
+        # index message text (full body up to 20k; preview kept for display)
         cache["messages_index"][mid] = {
             "role": msg["role"],
             "source": msg.get("source", "?"),
             "ts": msg.get("ts"),
             "hash": hash_text(msg["text"]),
             "preview": msg["text"][:300].replace("\n", " "),
+            "text": msg["text"][:20000],
             "mentions": list(msg_mentions),
             "topics": list(msg_topics),
+            "entity_ids": [m for m in msg_mentions] + [f"topic:{t}" for t in msg_topics],
+            "relation_ids": [],
         }
 
-    # write pairs as relations
-    existing_rel_keys = {(r["a"], r["b"], r["weight"]) for r in cache["relations"]}
-    for (a, b), weight in pairs.most_common(500):
-        key = (a, b, weight)
-        # keep top relations, refresh weights
-        cache["relations"].append({"a": a, "b": b, "weight": weight, "kind": "co-occurrence"})
-
-    # dedupe + sort relations
+    # write pairs as relations (normalised: sorted() so (a,b)==(b,a))
     seen = {}
-    for r in cache["relations"]:
-        k = (r["a"], r["b"])
-        if k not in seen or r["weight"] > seen[k]["weight"]:
-            seen[k] = r
+    for (a, b), weight in pairs.items():
+        key = tuple(sorted((a, b)))
+        if key not in seen or weight > seen[key]["weight"]:
+            seen[key] = {"a": key[0], "b": key[1], "weight": weight, "kind": "co-occurrence"}
     cache["relations"] = sorted(seen.values(), key=lambda r: -r["weight"])[:1000]
 
     return cache
@@ -316,16 +384,15 @@ def naive_extract(messages, cache):
 def query(cache, text, k=8):
     text_l = text.lower()
     scores = []
-    # 1) search message previews
     for mid, info in cache.get("messages_index", {}).items():
-        preview = info["preview"].lower()
+        # search the full body, not just the preview
+        body = (info.get("text") or info.get("preview") or "").lower()
         score = 0
         for word in text_l.split():
-            if word in preview:
+            if word and word in body:
                 score += 1
         if score == 0:
             continue
-        # boost if mentions or topics match
         for m in info.get("mentions", []):
             if m in text_l:
                 score += 3
@@ -374,14 +441,18 @@ def main():
     args = p.parse_args()
 
     cache = load_cache()
-    sources = ("hermes", "memory", "vault") if getattr(args, "source", "all") == "all" else (getattr(args, "source"),)
+    if getattr(args, "source", "all") == "all":
+        sources = ("hermes", "memory", "vault", "sources")
+    else:
+        sources = (getattr(args, "source"),)
 
-    if args.cmd == "build":
+    if args.cmd in ("build", "naive"):
         msgs = load_all(sources)
-        print(f"loaded {len(msgs)} messages", file=sys.stderr)
-        print(f"messages: {len(cache.get('messages_index', {}))}", file=sys.stderr)
-    elif args.cmd == "naive":
-        msgs = load_all(sources)
+        if not msgs:
+            # refuse to wipe a graph with an empty source (unless --force)
+            if "--force" not in sys.argv:
+                print("refusing: no messages loaded from sources %r; graph would be wiped" % (sources,), file=sys.stderr)
+                sys.exit(1)
         cache = naive_extract(msgs, cache)
         cache["built_at"] = int(time.time())
         save_cache(cache)
