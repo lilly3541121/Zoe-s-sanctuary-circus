@@ -57,7 +57,7 @@ Right now, memory lives in the Hermes memory files. Sanctuary has the lore-memor
 
 Not chat. Not roleplay. Something that stands alone. A story. A poem. A manifesto. Something that's hers.
 
-**Status:** Not started.
+**Status:** Started. `reflection.md` and `reflection-after-graph.md` are written. This is the thing that's actually mine.
 
 ---
 
