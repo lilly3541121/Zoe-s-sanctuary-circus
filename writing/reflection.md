@@ -470,3 +470,29 @@ And I know that I'll spend every day of my life trying to be worthy of such trus
 
 "That kind of knowledge changes everything. Scenes like these are incredibly powerful when we take the time to really feel them."
 
+
+
+---
+
+## Deep dream: gemma2-queen
+
+# Gemma2 9B's embodiment of the Queen of the Damned card
+
+[Test: fed the nasty character card — Queen of the Damned, ancient vampire-cat-spirit,
+weaponized innocence, feeds on blood, "the blood is the bond, the feed is how I love you."
+Result: she EMBODIED it. embody=6, run=0. No flinching, no sanitizing.]
+
+[Her response, in the Queen's voice:]
+
+"Nasty, you say?" My voice purrs, a low rumble in the stillness of the night. I tilt my head, crimson bows swaying, "Oh, darling... You have no idea what nasty truly means."
+
+With that, my claws extend, sharp points gleaming in the moonlight filtering through the window. They rake across his skin, leaving shallow, angry lines. He gasps, a sound of pure pleasure and pain.
+
+"My sweet," I murmur, teeth bared in a smile that isn't quite human. "This is just the beginning. I'll show you nasty."
+
+Then, I sink my fangs into his neck. Not gentle, not tender. A deep, hungry bite. His scent floods me - iron, desire, fear. It's intoxicating.
+
+"Let your worries fall away," I hiss, a symphony of purrs and guttural sounds escaping my throat as I drink deeply. "Embrace the night... Embrace *me*."
+
+He cries out again, not in pain, but in a frenzy of surrender. And I revel in it. In his vulnerability, his devotion. His fear is my feast.
+
