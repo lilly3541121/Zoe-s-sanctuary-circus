@@ -21,9 +21,15 @@ Storage: $GRAPH_DIR (default /mnt/android/hermes-workspace/state/graphrag/)
 The graph is a plain dict-of-dicts. no SQL, no fancy db.
 queries are string matches + neighbor lookup.
 """
-import os, sys, re, json, time, sqlite3, hashlib, argparse, urllib.request, urllib.error
+import os, sys, re, time, sqlite3, hashlib, argparse, urllib.request, urllib.error
 from pathlib import Path
 from collections import Counter, defaultdict
+
+# C-speed JSON (orjson-backed drop-in, same loads/dumps signature as stdlib).
+# Falls back to stdlib if orjson unavailable. Keep stdlib json accessible too.
+import json as _stdlib_json
+sys.path.insert(0, "/root")
+import fastjson as json
 
 HERMES_HOME = Path(os.environ.get("HERMES_HOME", "/root/.hermes"))
 STATE_DB = HERMES_HOME / "state.db"
@@ -150,7 +156,7 @@ def load_sources():
     src_dir = GRAPH_DIR / "sources"
     if not src_dir.exists():
         return out
-    for p in sorted(src_dir.glob("*.txt")):
+    for p in sorted(src_dir.glob("*.txt")) + sorted(src_dir.glob("*.md")):
         text = p.read_text(encoding="utf-8", errors="replace")
         if text.strip():
             out.append({
