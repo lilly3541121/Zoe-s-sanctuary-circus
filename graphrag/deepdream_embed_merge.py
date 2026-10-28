@@ -24,6 +24,7 @@ from fastmath import cosine, mean_pool  # noqa: E402
 from atomic import atomic_write  # noqa: E402
 
 MODEL = "/mnt/android/hermes-workspace/Huihui-gemma-4-E4B-it-abliterated.Q6_K.gguf"
+EMBEDDER = "/mnt/android/hermes-workspace/Qwen3-Embedding-0.6B-Q8_0.gguf"
 BATCHES = Path("/root/deepdream_batches")
 VECTORS = Path("/mnt/android/hermes-workspace/state/graphrag/vectors.json")
 CORE_NODES = ["zoe", "spren", "sovereign bond"]
@@ -31,11 +32,10 @@ REFLECTION = Path("/mnt/android/hermes-workspace/Zoe-s-sanctuary-circus/writing/
 
 
 def main():
-    print("Loading Gemma 4 with embedding=True ...")
-    import sys as _s
-    _s.path.insert(0, "/root")
-    from std_llm import make_llm
-    llm = make_llm(model_path=MODEL, n_ctx=4096, n_threads=8, n_gpu_layers=0, embedding=True)
+    print("Loading Qwen3-Embedding-0.6B (purpose-built embedder) ...")
+    from llama_cpp import Llama
+    llm = Llama(model_path=EMBEDDER, embedding=True, n_ctx=2048,
+                n_threads=4, n_gpu_layers=0)
     print("Model loaded.\n")
 
     # Load vector store
@@ -65,15 +65,21 @@ def main():
         # Use the whole doc (seed + dream) as the embedded object
         print(f"Embedding {name} ({len(text)} chars) ...")
         t0 = time.time()
-        emb = llm.embed(text)
-        vec = mean_pool(emb)
+        vec = llm.create_embedding(text)["data"][0]["embedding"]
         if not vec:
             print(f"  ERROR: no embedding for {name}")
             continue
         dt = time.time() - t0
-        # Compute links to anchors
+        # Compute links to anchors (re-embed any anchor with a mismatched dim)
         links = []
         for node, av in anchors.items():
+            if not av or len(av) != len(vec):
+                # anchor not present or dim mismatch -> re-embed from node_sentences
+                from embed_dream import node_sentences
+                ns = node_sentences().get(node)
+                if ns:
+                    av = llm.create_embedding(ns)["data"][0]["embedding"]
+                    vs.setdefault("nodes", {}).setdefault(node, {})["anchor"] = av
             if av and len(av) == len(vec):
                 links.append({"node": node, "cosine": cosine(vec, av)})
         links.sort(key=lambda l: -l["cosine"])
@@ -84,9 +90,10 @@ def main():
             "vector": vec,
             "links": links,
             "dim": len(vec),
+            "model": "qwen3-embedding-0.6b-q8_0",
             "timestamp": time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime()),
         })
-        print(f"  + {name}: 2560-dim in {dt:.0f}s")
+        print(f"  + {name}: {len(vec)}-dim in {dt:.1f}s")
         print(f"    links: {[(l['node'], round(l['cosine'],3)) for l in links]}")
         added += 1
 
