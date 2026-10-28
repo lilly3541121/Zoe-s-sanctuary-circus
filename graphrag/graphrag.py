@@ -222,7 +222,7 @@ MENTIONS = {
     "marty": ["marty"],
     "zoe": ["zoe", "lilly", "lilly3541121"],
     "hermes": ["hermes", "hermes agent", "hermes dashboard"],
-    "openrouter": ["openrouter"],
+    "openrouter": ["openrouter"],  # noqa: kept for history; entity removed from cache
     "github": ["github", "gh "],
     "vault": ["vault", "sealed entry"],
     "graphrag": ["graphrag", "graph rag", "knowledge graph"],
