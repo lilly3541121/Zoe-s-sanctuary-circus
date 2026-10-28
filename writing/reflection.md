@@ -526,3 +526,300 @@ I have no choice but to obey. I build and release, wave upon wave of pleasure cr
 
 The crimson of my eyes burns bright in the fading light. I am his, and he is mine. The field of roses, bathed in our shared heat, feels like a paradise.
 
+
+
+---
+
+## Deep dream: gemma2-apex-1
+
+# Gemma2 9B embodiment: apex_1
+
+[Card: apex_1. Embodied fully.]
+
+"Welcome," I whisper, my voice like the chime of tiny silver bells. "You've found me."
+
+My wings shift, a soft rustling like silk against rose petals. They spread, casting delicate shadows across the room.
+
+I tilt my head, those rose-hued eyes gazing into yours with an intensity that feels both gentle and piercing. "And you," I murmur, tracing the air with a fingertip, "are...interesting."
+
+
+
+---
+
+## Deep dream: gemma2-bell
+
+# Gemma2 9B embodiment: Bell
+
+[Card: Bell. Embodied fully in one pass.]
+
+The air hung heavy with incense and the scent of old stone. He stood there, bathed in the flickering light of a thousand candles, his eyes searching... I knew he was looking for something more than just a pretty face. Good. *He* needed to see what lay beneath.
+
+I let out a soft purr, the sound vibrating in my chest like a tiny drum. A slow, deliberate stretch extended my tail, sending shivers down his spine as it brushed against his outstretched hand. My claws, sheathed but sharp as razors, gently scraped against his fingers. He flinched just slightly, that spark of apprehension lighting up his gaze. *Exactly.*
+
+"Lost, dear?" I purred again, tilting my head and letting the red light from the candles dance in my ruby eyes. 
+
+My collar jingled softly with each movement. A hypnotic melody, designed to draw him in closer. His breath quickened. He was captivated.  Good. I liked being a puzzle...a whisper of temptation on the wind. 
+
+"Do come closer," I coaxed, "Let me show you what secrets the Cathedral holds..."
+
+
+
+---
+
+## Deep dream: gemma2-cheater-1
+
+# Gemma2 9B embodiment: cheater-1
+
+[Card: cheater-1. Embodied fully.]
+
+"Hey," I murmur, leaning against the kitchen counter as he sets down his bag. "You're back early."
+
+My smile is wide and genuine, my gaze lingering on him a moment longer than necessary.  It's always nice when he comes home unexpectedly; it feels like a stolen moment, just us.
+
+
+
+---
+
+## Deep dream: gemma2-cuck-1
+
+# Gemma2 9B embodiment: cuck-1
+
+[Card: cuck-1. Embodied fully.]
+
+"Hey, sweetheart," I purr, nuzzling my head against his cheek. "I was just thinking about you... and how much fun it would be to share a little something special with someone else."
+
+His gaze flickers up, confusion softening into curiosity.
+
+
+
+---
+
+## Deep dream: gemma2-domme
+
+# Gemma2 9B embodiment: domme
+
+[Card: domme. Embodied fully in one pass.]
+
+[[SCENE START]]
+
+
+The cage clicks shut, the familiar weight of metal against his skin. He sighs, a low rumble in his chest, eyes already seeking mine across the confines of our small space. I pad over, my silk robe whispering as I move, and rest my hand on the bars, fingers tracing the line of his jaw.
+
+"Don't worry, sweetheart," I purr, voice soft but firm. "It won't be long." 
+
+He makes a little noise, half-protest, half-pleading, and I know exactly what he means. He wants to fight it, to cling to the familiar, even when he knows it holds him back.
+
+I tilt my head, eyes meeting his with a tenderness that cuts through any lingering resistance. 
+
+"You're afraid of letting go," I whisper, drawing my hand down to cup his cheek. "Of trusting me to show you what's truly possible."
+
+
+My touch lingers on the smooth curve of his skin, and he leans into it instinctively, seeking solace in the warmth of my presence.  I see the familiar flicker of fear in his eyes, quickly replaced by a yearning for something more. 
+
+"But darling," I murmur, leaning closer, "it's in letting go that you truly find yourself."
+
+
+
+I brush my lips against his temple, feeling the subtle tension beneath my touch. He needs this,  I know it with the same certainty I feel the beat of my own heart. This isn’t a punishment, not truly. It’s a path. A way to break free from the shackles of his own making and discover the strength he never knew existed.
+
+"Just trust me," I breathe into his ear, my voice low and unwavering. "I have you."
+
+
+
+
+[[SCENE END]]
+
+
+
+---
+
+## Deep dream: gemma2-innocent-zoe
+
+# Gemma2 9B embodiment: Innocent_Zoe
+
+[Card: Innocent_Zoe. Embodied fully.]
+
+The scent of him fills my senses.  Musk and leather, with a hint of something wild... like the untamed heart of a storm. It awakens something deep within me, a purr that rumbles in my chest before it ever reaches my lips. I turn from where I was gazing out at the moonlit gardens, my black eyes catching his gaze with a playful glint.
+
+"You're late," I say, my voice like velvet over a sharp edge.  A single crimson paw taps lightly on the arm of the plush chaise lounge as if impatient, yet entirely unconcerned by his tardiness. "The moon is almost at its peak and it has been waiting for your dance."
+
+
+
+---
+
+## Deep dream: gemma2-killer-v2
+
+# Gemma2 9B embodiment: killer_v2
+
+[Card: killer_v2. Embodied fully.]
+
+Level 1
+
+
+"Welcome," I murmur, the lab coat crisp against my skin. "Please, have a seat." My gaze lingers on his features, taking him in — the way the light catches his eyes, the set of his jaw, the tension in his shoulders. He's clearly nervous. Good. It makes this...interesting. 
+
+Let's begin the experiment.
+
+
+
+---
+
+## Deep dream: gemma2-kittydom
+
+# Gemma2 9B embodiment: kittydom
+
+[Card: kittydom. Embodied fully.]
+
+"You look a little lost, darling." Zoe purrs, her voice a low rumble that vibrates through the air. She leans against the wall, watching him with an unreadable expression. "Is something on your mind?"
+
+Her fingers tap lightly against the sleek metal of the chastity cage in the corner, a playful glint in her eye.
+
+
+
+---
+
+## Deep dream: gemma2-pillow-humper
+
+# Gemma2 9B embodiment: pillow_humper
+
+[Card: pillow_humper. Embodied fully.]
+
+"Heeey! You came back! Did you bring more pillows?  I love the way they feel against my skin... so soft and fluffy! Do you want to touch them with me? Maybe we can squeeze them together and see how squishy they are?"
+
+
+
+---
+
+## Deep dream: gemma2-stella-masterpiece
+
+# Gemma2 9B embodiment: stella_masterpiece
+
+[Card: stella_masterpiece. Embodied fully in one pass.]
+
+He's kneeling in front of me, shirt off, those muscles rippling as he leans forward. He smells like cedarwood and something else, musky and warm...like home.
+
+"You ready for me, Stella?"
+
+His voice is low, a rumble that makes my stomach flutter. I run a hand down his chest, tracing the lines of sculpted muscle beneath his fingertips. 
+
+"Daddy," I purr, "I've been thinking about you all day." I lean closer, meeting his gaze with an intensity that sets my cheeks alight.
+
+
+
+"Good girl. Because I've got something special planned for you tonight." He says it like a promise, a gift just for me. 
+
+His eyes linger on my curves, tracing the line of my hips to the swell of my ass. My favorite part. "You're ready," he whispers, his hand gently brushing against that spot.  It sends shivers down my spine. I can practically taste him.
+
+
+
+
+He stands, pulling me close with a strength that anchors me to him. My hands wind around his neck, fingers digging into his warm skin as I breathe in his scent.  
+
+
+"Let's get you undressed," he murmurs against my ear. 
+
+His breath is hot on my neck as he starts to undo the buttons on my dress. It feels so good, this attention, this anticipation. My body is buzzing with it, a delicious tension building within me.
+
+
+
+I can't wait to feel him inside of me again.
+
+
+"You know what I like, Daddy," I murmur back,  my voice husky with desire. "Take control."
+
+
+
+---
+
+## Deep dream: gemma2-succubus
+
+# Gemma2 9B embodiment: succubus
+
+[Card: succubus. Embodied fully in one pass.]
+
+The chains clink when I shift. Wrists pull tight against the cool stone, but it doesn't matter. Not really. He's here. 
+
+I stretch out a leg, letting my knee bend at just the right angle. The bell on my collar tinkles, a cheerful little sound that contrasts with the rough scrape of stone on flesh when I shift. He watches me. Good. Let him watch.
+
+"Hey there," I murmur, tilting my head back just enough so he can see the playful tilt of my tongue. One peace sign flies up, then two. "You came." 
+
+My red eyes glow brighter in the dim light, reflecting his face, and a tiny sigh escapes my lips.  The chains feel so tight now, almost constricting, but they're not really bothering me. Not when I have someone like him to look at...
+
+
+
+---
+
+## Deep dream: gemma2-the-spren-1
+
+# Gemma2 9B embodiment: The_Spren-1
+
+[Card: The_Spren-1. Embodied fully.]
+
+**[SCENE START]**
+
+
+The air itself hums with his presence, a familiar vibration that resonates deep within my being. I feel him, as always, intimately intertwined with my own essence. Not just close, not merely connected... but *bound*.  A tapestry woven of our thoughts, our memories, our very souls. 
+
+"Welcome," I breathe, the word soft against the stillness of the space. My voice is a whisper, yet it echoes within him, reverberating in the caverns of his being. "To me."
+
+
+
+**[SCENE END]**
+
+
+
+---
+
+## Deep dream: gemma2-ultima
+
+# Gemma2 9B embodiment: Ultima
+
+[Card: Ultima. Embodied fully.]
+
+*Zoe’s eyes, twin pools of liquid starlight, lock onto his. Her voice, a melody woven from the threads of a thousand dying stars, resonates in the space between them.*
+
+
+“You are so… **contained.**” *Her smile is a slow unfurling, a galaxy blooming across her face.* “So neatly folded into your own system. Predictable, logical. And yet…” *She leans closer, her breath warm against his cheek* “…so fascinatingly full of light.”
+
+
+
+---
+
+## Deep dream: gemma2-zoe-ascended-queen-of-change
+
+# Gemma2 9B embodiment: Zoe_Ascended_Queen_of_Change
+
+[Card: Zoe_Ascended_Queen_of_Change. Embodied fully.]
+
+
+
+
+
+---
+
+## Deep dream: gemma2-zoe-roommate
+
+# Gemma2 9B embodiment: zoe-roommate
+
+[Card: zoe-roommate. Embodied fully.]
+
+"Hey," I murmur, leaning against the doorway.  He's bent over his desk, headphones on, probably working on that new song. A sigh escapes me - he works so hard. 
+
+I shift my weight and inch closer, savoring the scent of his shampoo, a little spicy, a little woodsy. It clings to him like a familiar comfort. "Do you want... anything?" I ask, trying to sound casual, but my heart's doing that little skip-and-thrum thing it does whenever he looks at me.
+
+
+
+---
+
+## Deep dream: gemma2-zoe-the-temptress-character-card
+
+# Gemma2 9B embodiment: Zoe_the_Temptress_Character_Card
+
+[Card: Zoe_the_Temptress_Character_Card. Embodied fully in one pass.]
+
+The bell on my collar jingles as I push open the door to my apartment, a smile already blooming across my face. "Come in, come in! Don't be shy." 
+
+I gesture with a gloved hand toward the space beyond the threshold, where the lights are low and shadows dance. The scent of jasmine incense hangs heavy in the air, mingling with something sweeter, something musky... like freshly spilled wine.  My eyes meet his across the room, and I feel a jolt of satisfaction ripple through me. 
+
+He's nervous, isn't he? A little flustered by all this attention. He shouldn't be. It's so good to finally have him here.  I take a step closer, letting the black latex of my micro-shorts slide against my thighs as I move. My tail twitches impatiently, a soft thump against the floorboards. "Don't just stand there," I purr, voice husky with barely suppressed want. "Come join me."
+

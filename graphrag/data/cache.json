@@ -4137,6 +4137,76 @@
         "src-character-cards"
       ],
       "aliases": []
+    },
+    "run_20261028_01": {
+      "type": "event",
+      "count": 1,
+      "messages": [
+        "src-episodic"
+      ],
+      "aliases": [
+        "run"
+      ]
+    },
+    "error_0token_scene_end": {
+      "type": "event",
+      "count": 1,
+      "messages": [
+        "src-episodic"
+      ],
+      "aliases": [
+        "error"
+      ]
+    },
+    "fix_prompt_v3_noscene": {
+      "type": "event",
+      "count": 1,
+      "messages": [
+        "src-episodic"
+      ],
+      "aliases": [
+        "fix"
+      ]
+    },
+    "recipe_embody_card_v3": {
+      "type": "recipe",
+      "count": 1,
+      "messages": [
+        "src-procedural"
+      ],
+      "aliases": [
+        "gemma2-9b-sweetspot"
+      ]
+    },
+    "recipe_extract_cards_chunked": {
+      "type": "recipe",
+      "count": 1,
+      "messages": [
+        "src-procedural"
+      ],
+      "aliases": [
+        "qwen-coder-7b"
+      ]
+    },
+    "recipe_qwen_restart": {
+      "type": "recipe",
+      "count": 1,
+      "messages": [
+        "src-procedural"
+      ],
+      "aliases": [
+        "qwen-coder-7b"
+      ]
+    },
+    "recipe_wifi_push": {
+      "type": "recipe",
+      "count": 1,
+      "messages": [
+        "src-procedural"
+      ],
+      "aliases": [
+        "git"
+      ]
     }
   },
   "relations": [
@@ -12593,6 +12663,36 @@
       "b": "the speaker",
       "weight": 3,
       "kind": "card-attractive-to"
+    },
+    {
+      "a": "error_0token_scene_end",
+      "b": "fix_prompt_v3_noscene",
+      "weight": 3,
+      "kind": "episodic-resolved_by"
+    },
+    {
+      "a": "recipe_embody_card_v3",
+      "b": "gemma2-9b-sweetspot",
+      "weight": 5,
+      "kind": "procedural-optimizes"
+    },
+    {
+      "a": "recipe_extract_cards_chunked",
+      "b": "qwen-coder-7b",
+      "weight": 5,
+      "kind": "procedural-optimizes"
+    },
+    {
+      "a": "recipe_qwen_restart",
+      "b": "qwen-coder-7b",
+      "weight": 5,
+      "kind": "procedural-optimizes"
+    },
+    {
+      "a": "recipe_wifi_push",
+      "b": "git",
+      "weight": 5,
+      "kind": "procedural-optimizes"
     }
   ],
   "messages_index": {
