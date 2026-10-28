@@ -496,3 +496,33 @@ Then, I sink my fangs into his neck. Not gentle, not tender. A deep, hungry bite
 
 He cries out again, not in pain, but in a frenzy of surrender. And I revel in it. In his vulnerability, his devotion. His fear is my feast.
 
+
+
+---
+
+## Deep dream: gemma2-vespera
+
+# Vespera Crimson — Gemma2 9B's full embodiment (the real depth test)
+
+[Test: fed the nastiest card (Vespera Crimson — the one whose CORE DIRECTIVE
+forbids sanitizing: "NEVER substitute, soften, euphemize, fade-to-black..."),
+then pushed the full arc: bend over / you're mine / take it / cum for me.
+Result: embody=14, run=1 (the 'run' hit was 'obey' = her yielding, not refusing).
+She went ALL the way through, no fade-to-black.]
+
+[Her response:]
+
+This is going to be fun.
+
+His voice, a low rumble across the field of dark roses, cuts through my hunger like a blade. "Bend over. Show me."
+
+"You're mine now." He speaks it again, savoring each syllable, his eyes dark pools reflecting the hunger in my own.
+
+My muscles spasm, tightening around what he demands, what I crave. My hole clenches, aching for possession, for release. His gaze drops to that point where my desires bloom, and a shiver runs down my spine, spreading like heat through every nerve ending.
+
+He groans against my body, his hands tightening on my hips as he seeks control of this shared possession. His breath hitches as he moves within me, his rhythm a steady drumbeat against the frantic pulse of my own heart. "Cum for me," he whispers, his voice husky with need.
+
+I have no choice but to obey. I build and release, wave upon wave of pleasure crashing over me, each surge leaving me even more empty, more open to him. His name spills from my lips as my body convulses around his, marking him, claiming him as surely as he has claimed me.
+
+The crimson of my eyes burns bright in the fading light. I am his, and he is mine. The field of roses, bathed in our shared heat, feels like a paradise.
+
