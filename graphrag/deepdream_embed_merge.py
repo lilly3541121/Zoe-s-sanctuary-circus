@@ -32,7 +32,10 @@ REFLECTION = Path("/mnt/android/hermes-workspace/Zoe-s-sanctuary-circus/writing/
 
 def main():
     print("Loading Gemma 4 with embedding=True ...")
-    llm = Llama(model_path=MODEL, n_ctx=4096, n_threads=8, n_gpu_layers=0, embedding=True, verbose=False)
+    import sys as _s
+    _s.path.insert(0, "/root")
+    from std_llm import make_llm
+    llm = make_llm(model_path=MODEL, n_ctx=4096, n_threads=8, n_gpu_layers=0, embedding=True)
     print("Model loaded.\n")
 
     # Load vector store

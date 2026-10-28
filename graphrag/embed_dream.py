@@ -33,7 +33,10 @@ VECTOR_FIELD = "vectors"  # added to each entity
 
 def get_llm():
     from llama_cpp import Llama
-    return Llama(model_path=MODEL_PATH, n_ctx=512, embedding=True, n_threads=8, n_gpu_layers=0, verbose=False)
+    import sys as _s
+    _s.path.insert(0, "/root")
+    from std_llm import make_llm
+    return make_llm(model_path=MODEL_PATH, n_ctx=512, embedding=True, n_threads=8, n_gpu_layers=0)
 
 
 def pooled_embed(llm, text):
