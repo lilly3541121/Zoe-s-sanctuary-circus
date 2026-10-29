@@ -50,20 +50,23 @@ This took big models from ~0.1 tok/s to **2-11 w/s** (roughly 21-29x speedup).
 ## The engine stack (engine_manager.py is the single source of truth)
 
 `/root/engine_manager.py` is the launcher. All engines use the KleidiAI build.
-**CRITICAL**: the qroot bridge sets `PORT=35449` globally; `llama_cpp/server`
-reads `PORT` env FIRST. Always launch each engine with a **unique PORT** in its
-own env (the manager already does this — don't override).
+**CRITICAL PORT FIX (2026-10-29):** the qroot bridge SQUATS on the 808x ports
+(8080-8089) — a phantom process/namespace holds them, so `llama_cpp.server`
+and the direct-API scripts die with `OSError: [Errno 98] Address already in
+use` there, even though the bridge answers curl with stale replies. **Use the
+18xxx range** (verified clean): the manager now launches all engines on
+18080-18089. Do NOT revert to 808x — that's the "ports fucks" bug.
 
-| Engine     | Port | Model                                        | Size  | Mode      | Speed     |
-|------------|------|----------------------------------------------|-------|-----------|-----------|
-| nidum      | 8088 | Nidum-Limitless-Gemma-2B-Q4_K_M.gguf         | 1.5GB | resident  | **7 w/s** |
-| gemma2     | 8083 | gemma-2-9b-it-abliterated-Q4_K_M.gguf        | 5.4GB | resident  | 1.8-2.4 w/s |
-| router     | 8085 | qwen2.5-0.5b-instruct-q8_0.gguf              | 0.6GB | resident  | 81 tok/s |
-| reranker   | 8086 | qwen3-reranker-0.6b-q8_0.gguf                | 0.6GB | resident  | - |
-| embedder   | 8087 | Qwen3-Embedding-0.6B-Q8_0.gguf               | 0.6GB | resident  | - |
-| precision  | 8080 | Qwen2.5-Coder-7B-Instruct-abliterated-Q5_K_M | 5.1GB | on-demand | ~29s for a verdict |
-| huihui_e4b | 8082 | Huihui-gemma-4-E4B-it-abliterated.Q6_K.gguf  | 5.8GB | on-demand | 2.4-4.2 w/s |
-| huihui_e2b | 8089 | Huihui-gemma-4-E2B-it-abliterated.Q4_K_M     | 3.2GB | on-demand | 6.5-10.7 w/s |
+| Engine     | Port  | Model                                        | Size  | Mode      | Speed     |
+|------------|-------|----------------------------------------------|-------|-----------|-----------|
+| nidum      | 18088 | Nidum-Limitless-Gemma-2B-Q4_K_M.gguf         | 1.5GB | resident  | **7 w/s** |
+| gemma2     | 18083 | gemma-2-9b-it-abliterated-Q4_K_M.gguf        | 5.4GB | resident  | 1.8-2.4 w/s |
+| router     | 18085 | qwen2.5-0.5b-instruct-q8_0.gguf              | 0.6GB | resident  | 81 tok/s |
+| reranker   | 18086 | qwen3-reranker-0.6b-q8_0.gguf                | 0.6GB | resident  | - |
+| embedder   | 18087 | Qwen3-Embedding-0.6B-Q8_0.gguf               | 0.6GB | resident  | - |
+| precision  | 18080 | Qwen2.5-Coder-7B-Instruct-abliterated-Q5_K_M | 5.1GB | on-demand | ~29s for a verdict |
+| huihui_e4b | 18082 | Huihui-gemma-4-E4B-it-abliterated.Q6_K.gguf  | 5.8GB | on-demand | 2.4-4.2 w/s |
+| huihui_e2b | 18089 | Huihui-gemma-4-E2B-it-abliterated.Q4_K_M     | 3.2GB | on-demand | 6.5-10.7 w/s |
 
 **Model files** live in `/mnt/android/hermes-workspace/*.gguf`.
 
@@ -140,10 +143,10 @@ def chat(port, prompt, max_tokens=50):
 ## Verify (re-run, don't re-derive)
 
 ```bash
-# 1. All resident engines respond:
-for p in 8083 8085 8086 8087 8088; do curl -s --max-time 3 http://127.0.0.1:$p/v1/models; done
+# 1. All resident engines respond (fresh 18xxx ports):
+for p in 18083 18085 18086 18087 18088; do curl -s --max-time 3 http://127.0.0.1:$p/v1/models; done
 # 2. CPU inference works end-to-end (2B, fast):
-python3 /root/verify_cpu_infer2.py    # expect ~7 w/s on nidum, ~2 w/s on gemma2
+python3 /root/verify_new_ports.py   # expect ~2-7 w/s on 18088, ~2 w/s on 18083
 # 3. Thermal sane (real CPU temp, not PMIC):
 python3 -c "import json; s=json.load(open('/mnt/android/hermes-workspace/state/monitor/live.json')); print('cpu_temp', s['cpu_temp_c'])"
 ```

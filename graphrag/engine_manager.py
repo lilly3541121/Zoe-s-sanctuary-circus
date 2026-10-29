@@ -39,7 +39,7 @@ VENV = "/root/.llm-venv/bin/python3"
 ENGINES = {
     "gemma2": {
         "model": f"{WORKSPACE}/gemma-2-9b-it-abliterated-Q4_K_M.gguf",
-        "port": 8083,
+        "port": 18083,
         "direct_api": True,
         "script": "/root/gemma2_direct.py",
         "resident": True,  # DEEP storyteller - the rich voice (KleidiAI ~2-3 w/s)
@@ -47,21 +47,21 @@ ENGINES = {
     },
     "router": {
         "model": f"{WORKSPACE}/qwen2.5-0.5b-instruct-q8_0.gguf",
-        "port": 8085,
+        "port": 18085,
         "direct_api": False,
         "resident": True,  # always needed for routing
         "mem_gb": 0.6,
     },
     "reranker": {
         "model": f"{WORKSPACE}/qwen3-reranker-0.6b-q8_0.gguf",
-        "port": 8086,
+        "port": 18086,
         "direct_api": False,
         "resident": True,  # always needed for reranking
         "mem_gb": 0.6,
     },
     "embedder": {
         "model": f"{WORKSPACE}/Qwen3-Embedding-0.6B-Q8_0.gguf",
-        "port": 8087,
+        "port": 18087,
         "direct_api": False,
         "resident": True,  # always needed for embeddings
         "mem_gb": 0.6,
@@ -69,7 +69,7 @@ ENGINES = {
     },
     "nidum": {
         "model": f"{WORKSPACE}/Nidum-Limitless-Gemma-2B-Q4_K_M.gguf",
-        "port": 8088,
+        "port": 18088,
         "direct_api": True,
         "script": "/root/gemma2b_direct.py",
         "resident": True,  # fast storyteller for short beats (7.8 w/s)
@@ -77,7 +77,7 @@ ENGINES = {
     },
     "precision": {
         "model": f"{WORKSPACE}/Qwen2.5-Coder-7B-Instruct-abliterated-Q5_K_M.gguf",
-        "port": 8080,
+        "port": 18080,
         "direct_api": False,
         "resident": False,  # ON-DEMAND - big, loads only for precision work
         "mem_gb": 5.1,
@@ -85,7 +85,7 @@ ENGINES = {
     # --- SWARM: Huihui gemma4 family specialists (activate when files land) ---
     "huihui_e4b": {
         "model": f"{WORKSPACE}/Huihui-gemma-4-E4B-it-abliterated.Q6_K.gguf",
-        "port": 8082,
+        "port": 18082,
         "direct_api": True,
         "script": "/root/gemma4_direct.py",  # direct API (server stalls)
         "resident": False,  # on-demand specialist (dream/poetry) - big
@@ -93,7 +93,7 @@ ENGINES = {
     },
     "huihui_e2b": {
         "model": f"{WORKSPACE}/Huihui-gemma-4-E2B-it-abliterated.Q4_K_M.gguf",
-        "port": 8089,
+        "port": 18089,
         "direct_api": True,
         "script": "/root/gemma2b_direct.py",  # same direct-API pattern
         "resident": False,  # on-demand specialist (fast beats) 
