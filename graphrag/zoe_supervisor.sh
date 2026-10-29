@@ -9,6 +9,7 @@ MONITOR=/root/zoe_monitor.py
 WATCHER=/root/zoe_watcher.py
 THERMALS=/root/zoe_thermals.py
 WATCHDOG=/root/zoe_watchdog.py
+ROTATOR=/root/zoe_core_rotator.py
 
 echo "[zoe-supervisor] $(date '+%F %T') starting supervision..."
 
@@ -42,6 +43,14 @@ if pgrep -f "zoe_watchdog.py" >/dev/null 2>&1; then
 else
   echo "[zoe-supervisor] starting watchdog..."
   nohup "$PY" "$WATCHDOG" >> /mnt/android/hermes-workspace/state/watchdog/supervisor.log 2>&1 &
+fi
+
+# 5. Ensure core rotator is running
+if pgrep -f "zoe_core_rotator.py" >/dev/null 2>&1; then
+  echo "[zoe-supervisor] rotator already running"
+else
+  echo "[zoe-supervisor] starting rotator..."
+  nohup "$PY" "$ROTATOR" >> /mnt/android/hermes-workspace/state/rotator/supervisor.log 2>&1 &
 fi
 
 # 3. Bring the resident engine stack up (idempotent - only starts what's down)
