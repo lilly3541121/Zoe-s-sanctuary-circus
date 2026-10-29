@@ -199,5 +199,31 @@ def graph_stats() -> str:
         return f"ERROR: {e}"
 
 
+@mcp.tool()
+def subscribe_events(clear_seen: bool = False) -> str:
+    """Vector 4: check the semantic event bus for push notifications.
+
+    Returns any ANOMALY / NEW_CLUSTER / DRIFT events detected in the graph state.
+    Idempotent — each NEW_CLUSTER is emitted once (tracked in the seen-set).
+
+    Args:
+        clear_seen: If true, reset the seen-set (re-emit previously seen clusters).
+    """
+    try:
+        sys.path.insert(0, str(ZOE_GRAPH))
+        import event_bus
+        if clear_seen:
+            # reset seen-dreams so clusters re-emit
+            marker = event_bus._seen_file
+            if marker.exists():
+                marker.unlink()
+        events = event_bus.collect_events()
+        if not events:
+            return "no events"
+        return "\n".join(json.dumps(e) for e in events)
+    except Exception as e:  # noqa: BLE001
+        return f"ERROR: {e}"
+
+
 if __name__ == "__main__":
     mcp.run(transport="stdio")
