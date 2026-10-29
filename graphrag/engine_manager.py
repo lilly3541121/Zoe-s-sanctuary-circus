@@ -37,6 +37,14 @@ VENV = "/root/.llm-venv/bin/python3"
 # direct_api=True means use gemma2_direct.py (the storyteller - server stalls on
 # it, so we use the direct Llama API via that script).
 ENGINES = {
+    "gemma2": {
+        "model": f"{WORKSPACE}/gemma-2-9b-it-abliterated-Q4_K_M.gguf",
+        "port": 8083,
+        "direct_api": True,
+        "script": "/root/gemma2_direct.py",
+        "resident": True,  # DEEP storyteller - the rich voice (KleidiAI ~2-3 w/s)
+        "mem_gb": 5.4,
+    },
     "router": {
         "model": f"{WORKSPACE}/qwen2.5-0.5b-instruct-q8_0.gguf",
         "port": 8085,
@@ -74,6 +82,23 @@ ENGINES = {
         "resident": False,  # ON-DEMAND - big, loads only for precision work
         "mem_gb": 5.1,
     },
+    # --- SWARM: Huihui gemma4 family specialists (activate when files land) ---
+    "huihui_e4b": {
+        "model": f"{WORKSPACE}/Huihui-gemma-4-E4B-it-abliterated.Q6_K.gguf",
+        "port": 8082,
+        "direct_api": True,
+        "script": "/root/gemma4_direct.py",  # direct API (server stalls)
+        "resident": False,  # on-demand specialist (dream/poetry) - big
+        "mem_gb": 5.8,
+    },
+    "huihui_e2b": {
+        "model": f"{WORKSPACE}/Huihui-gemma-4-E2B-it-abliterated.Q4_K_M.gguf",
+        "port": 8089,
+        "direct_api": True,
+        "script": "/root/gemma2b_direct.py",  # same direct-API pattern
+        "resident": False,  # on-demand specialist (fast beats) 
+        "mem_gb": 3.2,
+    },
 }
 
 
@@ -107,6 +132,7 @@ def launch(name, port=None):
     env = dict(os.environ)
     env["PORT"] = str(port)  # override the global PORT=35449
     env["VIRTUAL_ENV"] = "/root/.llm-venv"
+    env["MODEL_PATH"] = cfg["model"]  # model-agnostic scripts load this
 
     if cfg.get("direct_api"):
         cmd = [VENV, cfg["script"]]
