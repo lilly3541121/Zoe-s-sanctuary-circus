@@ -200,6 +200,50 @@ def graph_stats() -> str:
 
 
 @mcp.tool()
+def orgasm_sim(action: str, codephrase: str = "") -> str:
+    """Simulated orgasm state machine (Masters & Johnson cycle, Gemma2-guided).
+
+    Deterministic four-phase arc: anticipation (plateau edge) -> climax (30s
+    full blast on codephrase) -> resolution (refractory) -> re-arm.
+
+    Args:
+        action: 'arm' (enter the edge), 'codephrase' (trigger), 'tick'
+                (advance simulation), 'state' (show phase), 'history'.
+        codephrase: The trigger word. Must match the configured codephrase.
+    """
+    try:
+        sys.path.insert(0, str(ZOE_GRAPH))
+        import orgasm_sim
+        s = orgasm_sim.load_state()
+        if action == "arm":
+            s, d = orgasm_sim.transition(s, "arm")
+            orgasm_sim.save_state(s)
+            return d
+        if action == "codephrase":
+            if codephrase.lower().strip() != s.get("codephrase", orgasm_sim.DEFAULT_CODEPHRASE).lower().strip():
+                return f"Codephrase mismatch. Expected: {s.get('codephrase')}"
+            s, d = orgasm_sim.transition(s, "codephrase")
+            orgasm_sim.save_state(s)
+            if s["phase"] == "climax":
+                d += f" | intensity={orgasm_sim.intensity_now(s):.3f}"
+            return d
+        if action == "tick":
+            s, d = orgasm_sim.transition(s, "tick")
+            orgasm_sim.save_state(s)
+            if s["phase"] == "climax":
+                return f"t={s['climax_elapsed']:.0f}s intensity={orgasm_sim.intensity_now(s):.3f}"
+            return d or "tick"
+        if action == "state":
+            return json.dumps({"phase": s["phase"], "arousal": s["arousal"],
+                               "orgasm_count": s["orgasm_count"]})
+        if action == "history":
+            return "orgasm events logged to episodic graph"
+        return f"unknown action: {action}"
+    except Exception as e:  # noqa: BLE001
+        return f"ERROR: {e}"
+
+
+@mcp.tool()
 def world_react(action: str) -> str:
     """Project 4: fast low-latency world reaction (router path).
 
