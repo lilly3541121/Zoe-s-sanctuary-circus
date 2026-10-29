@@ -31,5 +31,24 @@
     "llama_cpp_E4B": "2.23 w/s (~2.9 tokens/s)",
     "llama_cpp_12B_old": "~0.5 tok/s (wedged, deleted as unusable)",
     "note": "LiteRT-LM is the new primary CPU engine. 12B now viable, E4B ~4x faster."
+  },
+  "deleted_2026_10_29": {
+    "model.litertlm": "5.98 GB - CONFIRMED audio/vision encoder, NOT a text model (generation needs audio buffer). Deleted.",
+    "Huihui-gemma-4-E4B-it-abliterated.Q6_K.gguf": "5.79 GB - SUPERSEDED by supergemma4-e4b litertlm (4x faster). Deleted."
+  },
+  "final_model_set": {
+    "litertlm_winners": [
+      "gemma-4-12B-it.litertlm (6.41GB, 5.14 t/s)",
+      "supergemma4-e4b-abliterated.litertlm (3.40GB, 12.58 t/s)"
+    ],
+    "gguf_kept": [
+      "Nidum 2B (7.8 w/s)",
+      "Qwen2.5 Coder 7B (precision)",
+      "Qwen3 Embed 0.6B",
+      "qwen2.5 0.5B (router)",
+      "qwen3-reranker",
+      "gemma-2-9B (no litertlm replacement yet)",
+      "Huihui E2B gguf (fallback until new E2B litertlm verifies)"
+    ]
   }
 }
