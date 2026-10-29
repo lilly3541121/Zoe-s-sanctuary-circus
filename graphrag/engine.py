@@ -30,16 +30,10 @@ ENGINES = {
         "label": "Qwen 7B (precision)",
         "mode": "server",
     },
-    "gemma": {
-        "model": f"{WORKSPACE}/Huihui-gemma-4-E4B-it-abliterated.Q6_K.gguf",
-        "port": 8082,
-        "label": "Huihui Gemma 4 (dream)",
-        "mode": "server",
-    },
     "gemma2": {
         "model": f"{WORKSPACE}/gemma-2-9b-it-abliterated-Q4_K_M.gguf",
         "port": 8083,
-        "label": "Gemma2 9B (sweetspot)",
+        "label": "Gemma2 9B (set aside)",
         "mode": "direct",  # MUST use direct API — llama_cpp.server stalls on her
     },
     "violet": {

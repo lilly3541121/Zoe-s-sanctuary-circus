@@ -75,13 +75,6 @@ ENGINES = {
         "resident": True,  # fast storyteller for short beats (7.8 w/s)
         "mem_gb": 1.5,
     },
-    "dream": {
-        "model": f"{WORKSPACE}/Huihui-gemma-4-E4B-it-abliterated.Q6_K.gguf",
-        "port": 8082,
-        "direct_api": False,
-        "resident": False,  # ON-DEMAND - big, loads only when dreaming
-        "mem_gb": 5.8,
-    },
     "precision": {
         "model": f"{WORKSPACE}/Qwen2.5-Coder-7B-Instruct-abliterated-Q5_K_M.gguf",
         "port": 8080,
