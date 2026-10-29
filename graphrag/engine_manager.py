@@ -59,14 +59,6 @@ ENGINES = {
         "mem_gb": 0.6,
         "extra_args": ["--embedding", "True"],  # Qwen3-embedding needs this
     },
-    "gemma4": {
-        "model": f"{WORKSPACE}/Huihui-gemma-4-12B-it-abliterated.Q4_K_M.gguf",
-        "port": 8083,
-        "direct_api": True,
-        "script": "/root/gemma4_spec.py",  # cache-only (2x on repeated prompts)
-        "resident": True,  # the new deep storyteller (replaces gemma2 9B)
-        "mem_gb": 8.0,
-    },
     "nidum": {
         "model": f"{WORKSPACE}/Nidum-Limitless-Gemma-2B-Q4_K_M.gguf",
         "port": 8088,
