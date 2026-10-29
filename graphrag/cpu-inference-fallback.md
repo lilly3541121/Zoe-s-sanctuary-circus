@@ -47,6 +47,48 @@ CMAKE_ARGS="-DGGML_NATIVE=ON -DGGML_CPU_KLEIDIAI=ON -DGGML_OPENMP=ON" \
 
 This took big models from ~0.1 tok/s to **2-11 w/s** (roughly 21-29x speedup).
 
+## LiteRT-LM path (NEW - the faster CPU engine, measured 2026-10-29)
+
+**LiteRT-LM is now the FASTEST CPU path** — ~4x faster than llama.cpp on the
+same model class, AND holds speed on sustained load (stays cool, no thermal
+collapse). Use this for the 9B / E4B / any litertlm model.
+
+### Setup (already done, but re-doable):
+```bash
+/root/.hermes/bin/uv venv /root/.litert-venv
+/root/.hermes/bin/uv pip install --python /root/.litert-venv/bin/python ai-edge-litert litert-lm
+```
+- `ai-edge-litert 2.3.0` (runtime) + `litert-lm 0.19.0` (CLI/engine)
+- Models are **`.litertlm`** files (LiteRT-LM container, magic `b'LITE'`),
+  NOT plain `.tflite`. Import + run with the `litert-lm` CLI.
+
+### Run a model:
+```bash
+# Import (once):
+/root/.litert-venv/bin/litert-lm import /path/to/model.litertlm
+# Describe (shows backends, spec-decode support, context):
+/root/.litert-venv/bin/litert-lm describe <model>
+# Benchmark (measured tokens/s):
+/root/.litert-venv/bin/litert-lm benchmark <model> --decode-tokens=512
+# Generate:
+/root/.litert-venv/bin/litert-lm run <model> --prompt="..." --backend=cpu
+```
+
+### Measured results (supergemma4-e4b-abliterated.litertlm, CPU):
+- **Prefill: 97-115 tokens/s**
+- **Decode: 12.58 tokens/s** (256-tok) / **10.59 t/s** (512-tok sustained)
+- **Time to first token: 2.35-2.72s**
+- **llama.cpp E4B comparison: 2.23 w/s (~2.9 t/s)** → LiteRT-LM is **~4x faster**
+- **Speculative decoding: SLOWER on CPU (5.62 t/s)** — keep `--speculative-decoding=off`
+- **Thermal: 42.4°C after sustained run** (no collapse — the sustained-load win)
+
+### Critical pitfalls:
+- `.litertlm` is NOT `.tflite` — the plain `ai_edge_litert.Interpreter`
+  fails ("not a valid Flatbuffer"). Use `litert-lm` CLI.
+- `--max-tokens` is wrong; it's `--max-num-tokens`.
+- Keep speculative decoding OFF on CPU (it's slower).
+- The 12B litertlm is the same path (just bigger).
+
 ## The engine stack (engine_manager.py is the single source of truth)
 
 `/root/engine_manager.py` is the launcher. All engines use the KleidiAI build.

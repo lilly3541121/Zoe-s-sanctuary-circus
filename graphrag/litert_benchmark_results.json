@@ -1,0 +1,21 @@
+{
+  "model": "supergemma4-e4b-abliterated.litertlm",
+  "engine": "litert-lm 0.19.0 (LiteRT-LM)",
+  "runtime": "ai-edge-litert 2.3.0",
+  "backend": "cpu",
+  "measured_2026_10_29": {
+    "prefill_256": "112.85 tokens/s",
+    "decode_256": "12.58 tokens/s",
+    "decode_512_sustained": "10.59 tokens/s",
+    "prefill_512": "97.37 tokens/s",
+    "time_to_first_token": "2.35-2.72s",
+    "init_time": "8.4-11.3s",
+    "speculative_decoding_on": "5.62 t/s (SLOWER on CPU - keep OFF)"
+  },
+  "comparison_llama_cpp_E4B": {
+    "engine": "llama.cpp 0.3.36 KleidiAI",
+    "measured": "2.23 w/s (~2.9 tokens/s)",
+    "note": "same 4B-class model family, Q6_K gguf"
+  },
+  "verdict": "LiteRT-LM is ~4x faster than llama.cpp on the E4B (12.58 vs ~2.9 tokens/s decode), AND holds speed on sustained load (only 15% drop at 512 tokens vs llama.cpp's thermal collapse). Speculative decoding is SLOWER on CPU - keep OFF."
+}
