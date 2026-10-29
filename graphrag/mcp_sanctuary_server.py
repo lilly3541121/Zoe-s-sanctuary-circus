@@ -200,6 +200,65 @@ def graph_stats() -> str:
 
 
 @mcp.tool()
+def world_react(action: str) -> str:
+    """Project 4: fast low-latency world reaction (router path).
+
+    Given a user action, returns the world reaction and updates the persistent
+    world state (written to the episodic graph). Rule-based, sub-ms — no LLM.
+
+    Args:
+        action: The user's action (e.g. "kiss her", "think about the bond").
+    """
+    try:
+        sys.path.insert(0, str(ZOE_GRAPH))
+        import world_state
+        r = world_state.react(action)
+        return json.dumps({"reaction": r["reaction"],
+                           "mood": r["state"]["characters"]["zoe"].get("mood")})
+    except Exception as e:  # noqa: BLE001
+        return f"ERROR: {e}"
+
+
+@mcp.tool()
+def world_state() -> str:
+    """Project 4: dump the current persistent world state (characters + env + decision tree)."""
+    try:
+        sys.path.insert(0, str(ZOE_GRAPH))
+        import world_state
+        return json.dumps(world_state.load_state(), indent=2)
+    except Exception as e:  # noqa: BLE001
+        return f"ERROR: {e}"
+
+
+@mcp.tool()
+def ingest_documents(dry_run: bool = False) -> str:
+    """Project 3: process any new files in the ingest/ drop folder into the graph.
+
+    Parses Markdown/text/PDF, chunks, embeds with the Qwen embedder, and inserts
+    document nodes linked to core anchors (doc-affinity). Idempotent.
+
+    Args:
+        dry_run: If true, report what would be ingested without writing.
+    """
+    try:
+        sys.path.insert(0, str(ZOE_GRAPH))
+        import synth_ingest
+        results = []
+        for f in sorted(synth_ingest.INGEST.iterdir()):
+            if f.is_file() and f.suffix.lower() in (".md", ".txt", ".pdf", ".markdown"):
+                if dry_run:
+                    results.append({"file": f.name, "status": "would_process"})
+                else:
+                    r = synth_ingest.process_file(f, synth_ingest.load_processed())
+                    results.append({"file": f.name, **r})
+        if not dry_run:
+            synth_ingest.save_processed(synth_ingest.load_processed())
+        return json.dumps(results, indent=2) if results else "no files to ingest"
+    except Exception as e:  # noqa: BLE001
+        return f"ERROR: {e}"
+
+
+@mcp.tool()
 def subscribe_events(clear_seen: bool = False) -> str:
     """Vector 4: check the semantic event bus for push notifications.
 
