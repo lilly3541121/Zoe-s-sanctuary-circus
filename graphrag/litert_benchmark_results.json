@@ -1,54 +1,49 @@
 {
   "date": "2026-10-29",
-  "engine": "litert-lm 0.19.0 (LiteRT-LM), ai-edge-litert 2.3.0",
-  "backend": "cpu",
-  "models": {
-    "gemma-4-12B-it.litertlm": {
-      "size_gb": 6.41,
-      "decode_256": "5.14 tokens/s",
-      "decode_512_sustained": "4.94 tokens/s (only 4% drop - holds sustained!)",
-      "prefill_256": "24.32 tokens/s",
-      "prefill_512": "21.41 tokens/s",
-      "time_to_first": "10.7-12.2s",
-      "init_time": "16.9-23.8s",
-      "max_context": "131071 tokens",
-      "speculative_decoding": "YES (untested - was slower on CPU for E4B)",
-      "thermal": "42.4C (cool, no collapse)",
-      "verdict": "The previously-unusable 12B (wedged at ~0.5 tok/s in llama.cpp, deleted) now runs at 5.14 tok/s decode with gorgeous deep prose. ~5-10x faster than llama.cpp 12B. HOLDS sustained load (4.94 @512tok, 42C)."
-    },
+  "engine": "litert-lm 0.19.0, backend=cpu, spec-decode=off (measured: ON is slower)",
+  "lineup": {
     "supergemma4-e4b-abliterated.litertlm": {
       "size_gb": 3.4,
-      "decode_256": "12.41-12.58 tokens/s",
-      "decode_512_sustained": "10.59 tokens/s",
-      "prefill_256": "112-129 tokens/s",
-      "time_to_first": "2.06-2.72s",
-      "max_context": "4096",
-      "thermal": "42.4C",
-      "verdict": "~4x faster than llama.cpp E4B (2.9 t/s). Fastest storyteller. Spec-decode SLOWER on CPU - keep OFF."
+      "decode": "11.78-12.58 t/s",
+      "prefill": "98-129 t/s",
+      "ttft": "2.2-2.7s",
+      "drafter": "YES (built-in) - but spec-decode SLOWER on CPU (6.04 t/s vs 12.58)",
+      "role": "FAST STORYTELLER (the workhorse)",
+      "verdict": "Best everyday model. ~4x faster than llama.cpp E4B. Keep spec-decode OFF."
+    },
+    "Gemma-4-E2B-it-abliterated.litertlm": {
+      "size_gb": 4.72,
+      "decode": "10.48 t/s",
+      "prefill": "237 t/s",
+      "ttft": "1.17s",
+      "drafter": "NO (tf_lite_mtp_drafter not found - file lacks it)",
+      "role": "FAST E2B (small, quick)",
+      "verdict": "Decent - 10.48 t/s, very fast prefill (237 t/s). Slightly slower decode than E4B but faster start."
+    },
+    "gemma-4-12B-it.litertlm": {
+      "size_gb": 6.41,
+      "decode": "5.14 t/s",
+      "prefill": "24 t/s",
+      "ttft": "10.7-12.2s",
+      "drafter": "NOT TESTED",
+      "role": "DEEP MODEL (the prize)",
+      "verdict": "Viable at 5.14 t/s - the deep model finally usable. 131K ctx."
+    },
+    "DeepSeek-R1-Distill-Qwen-7B_q4_block32_ekv4096.litertlm": {
+      "size_gb": 4.22,
+      "decode": "7.37 t/s",
+      "prefill": "24 t/s",
+      "ttft": "10.7s",
+      "init_time": "45.3s",
+      "drafter": "NO",
+      "role": "WILDCARD (reasoning)",
+      "verdict": "7.37 t/s but 45s init + 10.7s TTFT + R1 thinking style. Slow start; reasoning-heavy. Not ideal for fast storytelling."
     }
   },
-  "comparison": {
-    "llama_cpp_E4B": "2.23 w/s (~2.9 tokens/s)",
-    "llama_cpp_12B_old": "~0.5 tok/s (wedged, deleted as unusable)",
-    "note": "LiteRT-LM is the new primary CPU engine. 12B now viable, E4B ~4x faster."
-  },
-  "deleted_2026_10_29": {
-    "model.litertlm": "5.98 GB - CONFIRMED audio/vision encoder, NOT a text model (generation needs audio buffer). Deleted.",
-    "Huihui-gemma-4-E4B-it-abliterated.Q6_K.gguf": "5.79 GB - SUPERSEDED by supergemma4-e4b litertlm (4x faster). Deleted."
-  },
-  "final_model_set": {
-    "litertlm_winners": [
-      "gemma-4-12B-it.litertlm (6.41GB, 5.14 t/s)",
-      "supergemma4-e4b-abliterated.litertlm (3.40GB, 12.58 t/s)"
-    ],
-    "gguf_kept": [
-      "Nidum 2B (7.8 w/s)",
-      "Qwen2.5 Coder 7B (precision)",
-      "Qwen3 Embed 0.6B",
-      "qwen2.5 0.5B (router)",
-      "qwen3-reranker",
-      "gemma-2-9B (no litertlm replacement yet)",
-      "Huihui E2B gguf (fallback until new E2B litertlm verifies)"
-    ]
-  }
+  "key_findings": [
+    "Speculative decoding (drafter) is SLOWER on CPU for E4B (6.04 vs 12.58 t/s) - keep OFF",
+    "E2B file does NOT contain tf_lite_mtp_drafter despite user expectation",
+    "DeepSeek has no drafter; slow init (45s) makes it unsuitable as a workhorse",
+    "E4B is the winner (12.58 t/s); E2B is good backup; 12B is the deep model; DeepSeek is a specialist only"
+  ]
 }

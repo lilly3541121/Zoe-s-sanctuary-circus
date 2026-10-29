@@ -91,6 +91,22 @@ ENGINES = {
         "resident": False,  # on-demand specialist (dream/poetry) - fast storyteller
         "mem_gb": 3.4,
     },
+    "huihui_e2b": {
+        "model": f"{WORKSPACE}/Gemma-4-E2B-it-abliterated.litertlm",  # LiteRT-LM E2B
+        "port": 18089,
+        "direct_api": False,
+        "litert": True,
+        "resident": False,  # on-demand - fast E2B (10.48 t/s, 237 t/s prefill)
+        "mem_gb": 4.7,
+    },
+    "deepseek": {
+        "model": f"{WORKSPACE}/DeepSeek-R1-Distill-Qwen-7B_q4_block32_ekv4096.litertlm",  # R1 reasoning
+        "port": 18081,
+        "direct_api": False,
+        "litert": True,
+        "resident": False,  # on-demand - REASONING specialist (slow init 45s, [thought] trace)
+        "mem_gb": 4.2,
+    },
 }
 
 

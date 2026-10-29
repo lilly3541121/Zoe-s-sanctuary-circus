@@ -74,6 +74,18 @@ collapse). Use this for the 9B / E4B / any litertlm model.
 /root/.litert-venv/bin/litert-lm run <model> --prompt="..." --backend=cpu
 ```
 
+### Measured lineup (all .litertlm, CPU, spec-decode OFF unless noted):
+| Model | Size | Decode | Prefill | TTFT | Drafter | Role |
+|-------|------|--------|---------|------|---------|------|
+| supergemma4-e4b-abliterated | 3.40GB | **11.78-12.58 t/s** | 98-129 t/s | 2.2-2.7s | YES (slower ON) | FAST STORYTELLER (workhorse) |
+| Gemma-4-E2B-it-abliterated | 4.72GB | 10.48 t/s | **237 t/s** | 1.17s | NO (file lacks drafter) | fast E2B backup |
+| gemma-4-12B-it | 6.41GB | 5.14 t/s | 24 t/s | 10.7-12.2s | untested | DEEP model (the prize, 131K ctx) |
+| DeepSeek-R1-Distill-Qwen-7B | 4.22GB | 7.37 t/s | 24 t/s | 10.7s | NO | REASONING specialist (R1 [thought] trace) |
+
+**DRafter finding (measured):** speculative decoding (MTP drafter) is **SLOWER on CPU**
+for the E4B — 6.04 t/s ON vs 12.58 t/s OFF. Keep `--speculative-decoding=off`.
+The E2B and DeepSeek files do NOT contain `tf_lite_mtp_drafter` (error on `=on`).
+
 ### CRITICAL PITFALL: .litertlm models must be COPIED into the registry, not symlinked
 - `litert-lm import` creates **symlinks** into the workspace (`/mnt/android/...`).
 - **`os.path.isfile()` FAILS on those symlinks** (qroot `/mnt/android` bind-mount quirk —
