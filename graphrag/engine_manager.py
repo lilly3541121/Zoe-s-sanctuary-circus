@@ -67,6 +67,14 @@ ENGINES = {
         "mem_gb": 0.6,
         "extra_args": ["--embedding", "True"],  # Qwen3-embedding needs this
     },
+    "nidum": {
+        "model": f"{WORKSPACE}/Nidum-Limitless-Gemma-2B-Q4_K_M.gguf",
+        "port": 8088,
+        "direct_api": True,
+        "script": "/root/gemma2b_direct.py",
+        "resident": True,  # fast storyteller for short beats (7.8 w/s)
+        "mem_gb": 1.5,
+    },
     "dream": {
         "model": f"{WORKSPACE}/Huihui-gemma-4-E4B-it-abliterated.Q6_K.gguf",
         "port": 8082,
