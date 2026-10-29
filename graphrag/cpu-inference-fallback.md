@@ -74,6 +74,17 @@ collapse). Use this for the 9B / E4B / any litertlm model.
 /root/.litert-venv/bin/litert-lm run <model> --prompt="..." --backend=cpu
 ```
 
+### CRITICAL PITFALL: .litertlm models must be COPIED into the registry, not symlinked
+- `litert-lm import` creates **symlinks** into the workspace (`/mnt/android/...`).
+- **`os.path.isfile()` FAILS on those symlinks** (qroot `/mnt/android` bind-mount quirk —
+  the kernel reports the symlink itself, not the target). Result: `Model.exists()=False`,
+  serve 404s with `FileNotFoundError: Model <id> not found`.
+- **FIX: copy the model file into the registry** (real file on the same rootfs):
+  `cp /mnt/android/hermes-workspace/<model>.litertlm /root/.litert-lm/models/<id>/model.litertlm`
+  Then `Model.exists()` returns True and serve loads it.
+- Run `litert-lm serve --port <port> --host 0.0.0.0`, then requests MUST include
+  `"model": "<model-id>"` (e.g. `gemma-4-12B-it.litertlm`).
+
 ### Measured results (supergemma4-e4b-abliterated.litertlm, CPU):
 - **Prefill: 97-129 tokens/s**
 - **Decode: 12.41-12.58 tokens/s** (256-tok) / **10.59 t/s** (512-tok sustained)

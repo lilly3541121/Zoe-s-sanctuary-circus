@@ -38,12 +38,12 @@ VENV = "/root/.llm-venv/bin/python3"
 # it, so we use the direct Llama API via that script).
 ENGINES = {
     "gemma2": {
-        "model": f"{WORKSPACE}/gemma-2-9b-it-abliterated-Q4_K_M.gguf",
+        "model": f"{WORKSPACE}/gemma-4-12B-it.litertlm",  # LiteRT-LM 12B (was 9B gguf, deleted)
         "port": 18083,
-        "direct_api": True,
-        "script": "/root/gemma2_direct.py",
-        "resident": True,  # DEEP storyteller - the rich voice (KleidiAI ~2-3 w/s)
-        "mem_gb": 5.4,
+        "direct_api": False,  # now served by litert-lm (LiteRT-LM), not llama.cpp
+        "litert": True,  # flag: launch via litert-lm CLI
+        "resident": True,  # DEEP storyteller - the rich voice (5.14 t/s, 131K ctx)
+        "mem_gb": 6.4,
     },
     "router": {
         "model": f"{WORKSPACE}/qwen2.5-0.5b-instruct-q8_0.gguf",
@@ -82,22 +82,14 @@ ENGINES = {
         "resident": False,  # ON-DEMAND - big, loads only for precision work
         "mem_gb": 5.1,
     },
-    # --- SWARM: Huihui gemma4 family specialists (activate when files land) ---
+    # --- SWARM: LiteRT-LM specialists (replaced the deleted gguf versions) ---
     "huihui_e4b": {
-        "model": f"{WORKSPACE}/Huihui-gemma-4-E4B-it-abliterated.Q6_K.gguf",
+        "model": f"{WORKSPACE}/supergemma4-e4b-abliterated.litertlm",  # LiteRT-LM E4B
         "port": 18082,
-        "direct_api": True,
-        "script": "/root/gemma4_direct.py",  # direct API (server stalls)
-        "resident": False,  # on-demand specialist (dream/poetry) - big
-        "mem_gb": 5.8,
-    },
-    "huihui_e2b": {
-        "model": f"{WORKSPACE}/Huihui-gemma-4-E2B-it-abliterated.Q4_K_M.gguf",
-        "port": 18089,
-        "direct_api": True,
-        "script": "/root/gemma2b_direct.py",  # same direct-API pattern
-        "resident": False,  # on-demand specialist (fast beats) 
-        "mem_gb": 3.2,
+        "direct_api": False,  # served by litert-lm
+        "litert": True,
+        "resident": False,  # on-demand specialist (dream/poetry) - fast storyteller
+        "mem_gb": 3.4,
     },
 }
 
@@ -134,7 +126,16 @@ def launch(name, port=None):
     env["VIRTUAL_ENV"] = "/root/.llm-venv"
     env["MODEL_PATH"] = cfg["model"]  # model-agnostic scripts load this
 
-    if cfg.get("direct_api"):
+    if cfg.get("litert"):
+        # LiteRT-LM path: launch the OpenAI-compatible server for .litertlm models.
+        # Callers must pass the model ID (e.g. "gemma-4-12B-it.litertlm") in requests.
+        # Backend/threads come from ~/.litert-lm/config.json (default: cpu, 4 threads).
+        cmd = [
+            "/root/.litert-venv/bin/litert-lm", "serve",
+            "--port", str(port),
+            "--host", "0.0.0.0",
+        ]
+    elif cfg.get("direct_api"):
         cmd = [VENV, cfg["script"]]
     else:
         cmd = [
