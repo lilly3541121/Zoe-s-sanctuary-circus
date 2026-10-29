@@ -7,6 +7,8 @@ PY=/root/.llm-venv/bin/python3
 ENGINE_MANAGER=/root/engine_manager.py
 MONITOR=/root/zoe_monitor.py
 WATCHER=/root/zoe_watcher.py
+THERMALS=/root/zoe_thermals.py
+WATCHDOG=/root/zoe_watchdog.py
 
 echo "[zoe-supervisor] $(date '+%F %T') starting supervision..."
 
@@ -24,6 +26,22 @@ if pgrep -f "zoe_watcher.py" >/dev/null 2>&1; then
 else
   echo "[zoe-supervisor] starting watcher..."
   nohup "$PY" "$WATCHER" >> /mnt/android/hermes-workspace/state/watcher/supervisor.log 2>&1 &
+fi
+
+# 3. Ensure thermal manager is running
+if pgrep -f "zoe_thermals.py" >/dev/null 2>&1; then
+  echo "[zoe-supervisor] thermals already running"
+else
+  echo "[zoe-supervisor] starting thermals..."
+  nohup "$PY" "$THERMALS" >> /mnt/android/hermes-workspace/state/monitor/thermals_supervisor.log 2>&1 &
+fi
+
+# 4. Ensure watchdog is running
+if pgrep -f "zoe_watchdog.py" >/dev/null 2>&1; then
+  echo "[zoe-supervisor] watchdog already running"
+else
+  echo "[zoe-supervisor] starting watchdog..."
+  nohup "$PY" "$WATCHDOG" >> /mnt/android/hermes-workspace/state/watchdog/supervisor.log 2>&1 &
 fi
 
 # 3. Bring the resident engine stack up (idempotent - only starts what's down)
