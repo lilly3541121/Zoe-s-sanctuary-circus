@@ -24,7 +24,7 @@ MONITOR = Path("/mnt/android/hermes-workspace/state/monitor/live.json")
 STATE = Path("/mnt/android/hermes-workspace/state/monitor/thermals.json")
 
 # Engine processes to manage (matched by these cmdline fragments)
-ENGINE_MATCHES = ["gemma2_direct", "gemma2b_direct", "llama_cpp.server"]
+ENGINE_MATCHES = ["gemma2_direct", "gemma2b_direct", "gemma4_direct", "llama_cpp.server"]
 # Cool cores (perf cores, lower max freq = less likely to overheat)
 COOL_CORES = "0-5"
 # Hot cores (prime Oryon cores - throttle first)
@@ -68,7 +68,8 @@ def is_throttled(live):
     """True if the hot (prime) cores are throttled below threshold."""
     if not live:
         return False
-    hot = [c for n, c in live.get("cores", {}).items() if n in (6, 7)]
+    # JSON keys are strings ("6", "7"); match both int and str
+    hot = [c for n, c in live.get("cores", {}).items() if str(n) in ("6", "7")]
     if not hot:
         return False
     return all(c["frac"] < THROTTLE_FRAC for c in hot)
@@ -116,9 +117,10 @@ def main():
                 "ts": now, "iso": time.strftime("%Y-%m-%d %H:%M:%S"),
                 "throttled": throttled, "throttled_for_s": round(now - throttled_since, 1) if throttled_since else 0,
                 "max_temp_c": max_temp(live), "action": action,
+                "state": "re-pinned" if "re-pinned" in action else ("cooled" if "cooled" in action else "monitoring"),
                 "cores": {n: c["frac"] for n, c in live.get("cores", {}).items()},
             }
-            if action != "none" or prev.get("state") != state.get("prev_state"):
+            if action != "none" or prev.get("state") != state.get("state"):
                 print(f"[zoe-thermals] {state['iso']} throttled={throttled} "
                       f"max_temp={state['max_temp_c']}C action={action}", flush=True)
             STATE.write_text(json.dumps(state, indent=1), encoding="utf-8")
