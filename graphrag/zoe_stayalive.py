@@ -66,8 +66,8 @@ def health_snapshot():
     snap = {}
     mon = read_json(Path("/mnt/android/hermes-workspace/state/monitor/live.json"))
     if mon:
-        temps = [t["temp_c"] for t in mon.get("thermals", []) if -20 < t["temp_c"] < 100]
-        snap["max_temp_c"] = max(temps) if temps else 0
+        # Use the real CPU temp (cpu_temp_c), not the hottest zone (PMIC)
+        snap["max_temp_c"] = mon.get("cpu_temp_c", 0)
         snap["mem_mb"] = mon.get("mem", {}).get("MemAvailable")
     wd = read_json(Path("/mnt/android/hermes-workspace/state/watchdog/watchdog.json"))
     if wd:

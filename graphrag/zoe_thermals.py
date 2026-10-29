@@ -75,11 +75,25 @@ def is_throttled(live):
     return all(c["frac"] < THROTTLE_FRAC for c in hot)
 
 
+def is_cpu_zone(zone_type):
+    """True if a thermal zone measures actual compute silicon (CPU/SoC),
+    NOT the PMIC/battery/other."""
+    if not zone_type:
+        return False
+    t = zone_type.lower()
+    if any(k in t for k in ("pmih", "pm8", "vbat", "usb", "socd", "battery", "charger", "skin", "quiet", "flash")):
+        return False
+    return any(k in t for k in ("cpu", "cpuss", "soc", "tsens", "kryo", "msm", "ap", "gpu"))
+
+
 def max_temp(live):
-    """Highest thermal zone temp in C (ignore absurd values)."""
+    """Highest CPU temp in C (use cpu_temp_c field if present, else CPU zones).
+    Ignore the PMIC - it runs warm doing power delivery, not compute."""
+    if live.get("cpu_temp_c"):
+        return live["cpu_temp_c"]
     ts = live.get("thermals", [])
-    temps = [t["temp_c"] for t in ts if -20 < t["temp_c"] < 100]
-    return max(temps) if temps else 0
+    cpu = [t["temp_c"] for t in ts if is_cpu_zone(t.get("type"))]
+    return max(cpu) if cpu else 0
 
 
 def main():

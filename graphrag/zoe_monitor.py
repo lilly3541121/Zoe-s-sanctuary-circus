@@ -85,7 +85,35 @@ def sample():
         pass
 
     return {"ts": time.time(), "iso": time.strftime("%Y-%m-%d %H:%M:%S"),
-            "cores": cores, "thermals": thermals, "mem": mem}
+            "cores": cores, "thermals": thermals, "mem": mem,
+            "cpu_temp_c": max((t["temp_c"] for t in thermals if is_cpu_zone(t.get("type"))), default=0)}
+
+
+def is_cpu_zone(zone_type):
+    """True if a thermal zone measures actual compute silicon (CPU cores/SoC),
+    NOT the PMIC/battery/other. CPU zones have types like 'cpu-0-4-1',
+    'cpuss-0-0', 'soc', 'tsens'. Exclude PMIC (pmih*, pm8*), battery (vbat),
+    usb, etc."""
+    if not zone_type:
+        return False
+    t = zone_type.lower()
+    # Explicitly exclude known non-CPU zones
+    if any(k in t for k in ("pmih", "pm8", "vbat", "usb", "socd", "battery", "charger", "skin", "quiet", "flash")):
+        return False
+    # Include CPU/SoC-ish zones
+    if any(k in t for k in ("cpu", "cpuss", "soc", "tsens", "kryo", "msm", "ap", "gpu")):
+        return True
+    return False
+
+
+def cpu_temp(s):
+    """Max temperature across actual CPU/SoC thermal zones only (Celsius).
+    Returns (max_temp_c, zone_name) or (0, None) if no CPU zones found."""
+    cpu_zones = [t for t in s["thermals"] if is_cpu_zone(t.get("type"))]
+    if not cpu_zones:
+        return 0, None
+    hottest = max(cpu_zones, key=lambda t: t["temp_c"])
+    return hottest["temp_c"], hottest["zone"]
 
 
 def check_throttle(s):
@@ -94,9 +122,10 @@ def check_throttle(s):
     for n, c in s["cores"].items():
         if c["frac"] < THROTTLE_FRAC:
             alerts.append(f"THROTTLED cpu{n}: {c['cur_mhz']}MHz/{c['max_mhz']}MHz ({c['frac']*100:.0f}%)")
-    for t in s["thermals"]:
-        if t["temp_c"] >= OVERHEAT_C:
-            alerts.append(f"OVERHEAT {t['zone']} ({t['type']}): {t['temp_c']}C")
+    # Alert on actual CPU/SoC zones ONLY (not the PMIC - it runs warm doing power delivery)
+    cpu_max, cpu_zone = cpu_temp(s)
+    if cpu_max >= OVERHEAT_C:
+        alerts.append(f"OVERHEAT CPU {cpu_zone}: {cpu_max}C")
     # Memory pressure
     if s["mem"].get("MemAvailable", 9999) < 512:
         alerts.append(f"LOW MEM: {s['mem'].get('MemAvailable',0)}MB avail")
@@ -109,10 +138,11 @@ def main():
         try:
             s = sample()
             LIVE.write_text(json.dumps(s, indent=1), encoding="utf-8")
-            # Append compact line to history
+            # Append compact line to history (report CPU temp, not PMIC)
+            cpu_max, cpu_zone = cpu_temp(s)
             line = (f"{s['iso']} "
                     f"core_mhz={[c['cur_mhz'] for c in sorted(s['cores'].values(), key=lambda x: x['max_mhz'], reverse=True)[:2]]} "
-                    f"max_temp={max((t['temp_c'] for t in s['thermals']), default=0)}C "
+                    f"cpu_temp={cpu_max}C "
                     f"mem_avail={s['mem'].get('MemAvailable','?')}MB")
             with open(HISTORY, "a") as f:
                 f.write(line + "\n")
