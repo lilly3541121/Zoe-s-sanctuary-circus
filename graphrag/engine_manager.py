@@ -63,7 +63,7 @@ ENGINES = {
         "model": f"{WORKSPACE}/Huihui-gemma-4-12B-it-abliterated.Q4_K_M.gguf",
         "port": 8083,
         "direct_api": True,
-        "script": "/root/gemma4_direct.py",
+        "script": "/root/gemma4_spec.py",  # cache-only (2x on repeated prompts)
         "resident": True,  # the new deep storyteller (replaces gemma2 9B)
         "mem_gb": 8.0,
     },
