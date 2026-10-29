@@ -75,12 +75,21 @@ collapse). Use this for the 9B / E4B / any litertlm model.
 ```
 
 ### Measured results (supergemma4-e4b-abliterated.litertlm, CPU):
-- **Prefill: 97-115 tokens/s**
-- **Decode: 12.58 tokens/s** (256-tok) / **10.59 t/s** (512-tok sustained)
-- **Time to first token: 2.35-2.72s**
+- **Prefill: 97-129 tokens/s**
+- **Decode: 12.41-12.58 tokens/s** (256-tok) / **10.59 t/s** (512-tok sustained)
+- **Time to first token: 2.06-2.72s**
 - **llama.cpp E4B comparison: 2.23 w/s (~2.9 t/s)** → LiteRT-LM is **~4x faster**
 - **Speculative decoding: SLOWER on CPU (5.62 t/s)** — keep `--speculative-decoding=off`
 - **Thermal: 42.4°C after sustained run** (no collapse — the sustained-load win)
+
+### Measured results (gemma-4-12B-it.litertlm, CPU) — the big prize:
+- **Decode: 5.14 tokens/s** (256-tok) / **4.94 t/s** (512-tok sustained — only 4% drop!)
+- **Prefill: 24.32 tokens/s** / **Time to first: 10.7-12.2s**
+- **Max context: 131,071 tokens** (huge)
+- **The OLD llama.cpp 12B wedged at ~0.5 tok/s and was deleted as unusable.**
+  Now it runs at **5.14 t/s with gorgeous deep prose** — genuinely usable.
+- **Thermal: 42.4°C** (cool — no collapse)
+- The 12B is now VIABLE. This is the deep model finally running at usable speed.
 
 ### Critical pitfalls:
 - `.litertlm` is NOT `.tflite` — the plain `ai_edge_litert.Interpreter`

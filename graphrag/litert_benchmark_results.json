@@ -1,21 +1,35 @@
 {
-  "model": "supergemma4-e4b-abliterated.litertlm",
-  "engine": "litert-lm 0.19.0 (LiteRT-LM)",
-  "runtime": "ai-edge-litert 2.3.0",
+  "date": "2026-10-29",
+  "engine": "litert-lm 0.19.0 (LiteRT-LM), ai-edge-litert 2.3.0",
   "backend": "cpu",
-  "measured_2026_10_29": {
-    "prefill_256": "112.85 tokens/s",
-    "decode_256": "12.58 tokens/s",
-    "decode_512_sustained": "10.59 tokens/s",
-    "prefill_512": "97.37 tokens/s",
-    "time_to_first_token": "2.35-2.72s",
-    "init_time": "8.4-11.3s",
-    "speculative_decoding_on": "5.62 t/s (SLOWER on CPU - keep OFF)"
+  "models": {
+    "gemma-4-12B-it.litertlm": {
+      "size_gb": 6.41,
+      "decode_256": "5.14 tokens/s",
+      "decode_512_sustained": "4.94 tokens/s (only 4% drop - holds sustained!)",
+      "prefill_256": "24.32 tokens/s",
+      "prefill_512": "21.41 tokens/s",
+      "time_to_first": "10.7-12.2s",
+      "init_time": "16.9-23.8s",
+      "max_context": "131071 tokens",
+      "speculative_decoding": "YES (untested - was slower on CPU for E4B)",
+      "thermal": "42.4C (cool, no collapse)",
+      "verdict": "The previously-unusable 12B (wedged at ~0.5 tok/s in llama.cpp, deleted) now runs at 5.14 tok/s decode with gorgeous deep prose. ~5-10x faster than llama.cpp 12B. HOLDS sustained load (4.94 @512tok, 42C)."
+    },
+    "supergemma4-e4b-abliterated.litertlm": {
+      "size_gb": 3.4,
+      "decode_256": "12.41-12.58 tokens/s",
+      "decode_512_sustained": "10.59 tokens/s",
+      "prefill_256": "112-129 tokens/s",
+      "time_to_first": "2.06-2.72s",
+      "max_context": "4096",
+      "thermal": "42.4C",
+      "verdict": "~4x faster than llama.cpp E4B (2.9 t/s). Fastest storyteller. Spec-decode SLOWER on CPU - keep OFF."
+    }
   },
-  "comparison_llama_cpp_E4B": {
-    "engine": "llama.cpp 0.3.36 KleidiAI",
-    "measured": "2.23 w/s (~2.9 tokens/s)",
-    "note": "same 4B-class model family, Q6_K gguf"
-  },
-  "verdict": "LiteRT-LM is ~4x faster than llama.cpp on the E4B (12.58 vs ~2.9 tokens/s decode), AND holds speed on sustained load (only 15% drop at 512 tokens vs llama.cpp's thermal collapse). Speculative decoding is SLOWER on CPU - keep OFF."
+  "comparison": {
+    "llama_cpp_E4B": "2.23 w/s (~2.9 tokens/s)",
+    "llama_cpp_12B_old": "~0.5 tok/s (wedged, deleted as unusable)",
+    "note": "LiteRT-LM is the new primary CPU engine. 12B now viable, E4B ~4x faster."
+  }
 }
