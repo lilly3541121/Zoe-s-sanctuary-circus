@@ -37,14 +37,6 @@ VENV = "/root/.llm-venv/bin/python3"
 # direct_api=True means use gemma2_direct.py (the storyteller - server stalls on
 # it, so we use the direct Llama API via that script).
 ENGINES = {
-    "gemma2": {
-        "model": f"{WORKSPACE}/gemma-2-9b-it-abliterated-Q4_K_M.gguf",
-        "port": 8083,
-        "direct_api": True,
-        "script": "/root/gemma2_direct.py",
-        "resident": True,  # storyteller - always up (it's the voice you love)
-        "mem_gb": 5.4,
-    },
     "router": {
         "model": f"{WORKSPACE}/qwen2.5-0.5b-instruct-q8_0.gguf",
         "port": 8085,
@@ -66,6 +58,14 @@ ENGINES = {
         "resident": True,  # always needed for embeddings
         "mem_gb": 0.6,
         "extra_args": ["--embedding", "True"],  # Qwen3-embedding needs this
+    },
+    "gemma4": {
+        "model": f"{WORKSPACE}/Huihui-gemma-4-12B-it-abliterated.Q4_K_M.gguf",
+        "port": 8083,
+        "direct_api": True,
+        "script": "/root/gemma4_direct.py",
+        "resident": True,  # the new deep storyteller (replaces gemma2 9B)
+        "mem_gb": 8.0,
     },
     "nidum": {
         "model": f"{WORKSPACE}/Nidum-Limitless-Gemma-2B-Q4_K_M.gguf",
