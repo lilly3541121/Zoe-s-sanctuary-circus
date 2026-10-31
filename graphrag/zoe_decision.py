@@ -18,8 +18,8 @@ import time
 import urllib.request
 
 QWEN_URL = "http://localhost:8080/v1/chat/completions"
-MANAGER = "/root/engine_manager.py"
-PY = "/root/.llm-venv/bin/python3"
+MANAGER = "/mnt/android/hermes-workspace/Zoe-s-sanctuary-circus/graphrag/engine_manager.py"
+PY = "/usr/bin/python3"
 GRAPH_DIR = "/mnt/android/hermes-workspace/state/graphrag"
 CACHE = os.path.join(GRAPH_DIR, "cache.json")
 

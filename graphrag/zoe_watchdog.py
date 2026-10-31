@@ -25,19 +25,16 @@ WDOG = STATE / "watchdog.json"
 ALERTS = STATE / "alerts.log"
 
 ENGINES = {
-    "gemma2": {"port": 8083, "match": "gemma2_direct.py"},
-    "router": {"port": 8085, "match": "0.5b"},
-    "reranker": {"port": 8086, "match": "reranker"},
-    "embedder": {"port": 8087, "match": "embedding"},
-    "nidum": {"port": 8088, "match": "gemma2b_direct.py"},
+    "litert_12b": {"port": 18085, "match": "litert-lm serve"},
+    "coder": {"port": 8081, "match": "llama_cpp.server"},
 }
 DAEMONS = {
-    "monitor": "/root/zoe_monitor.py",
-    "watcher": "/root/zoe_watcher.py",
-    "thermals": "/root/zoe_thermals.py",
+    "monitor": "/mnt/android/hermes-workspace/Zoe-s-sanctuary-circus/graphrag/zoe_monitor.py",
+    "watcher": "/mnt/android/hermes-workspace/Zoe-s-sanctuary-circus/graphrag/zoe_watcher.py",
+    "thermals": "/mnt/android/hermes-workspace/Zoe-s-sanctuary-circus/graphrag/zoe_thermals.py",
 }
-MANAGER = "/root/engine_manager.py"
-PY = "/root/.llm-venv/bin/python3"
+MANAGER = "/mnt/android/hermes-workspace/Zoe-s-sanctuary-circus/graphrag/engine_manager.py"
+PY = "/usr/bin/python3"
 
 CHECK_INTERVAL = int(os.environ.get("WATCHDOG_INTERVAL", "20"))
 STALL_CHECKS = int(os.environ.get("WATCHDOG_STALL_CHECKS", "3"))  # 3 missed = stuck

@@ -31,81 +31,19 @@ import time
 import urllib.request
 
 WORKSPACE = "/mnt/android/hermes-workspace"
-VENV = "/root/.llm-venv/bin/python3"
+VENV = "/usr/bin/python3"
 
 # Each engine: model file, preferred port, and how to launch it.
 # direct_api=True means use gemma2_direct.py (the storyteller - server stalls on
 # it, so we use the direct Llama API via that script).
 ENGINES = {
     "gemma2": {
-        "model": f"{WORKSPACE}/gemma-4-12B-it.litertlm",  # LiteRT-LM 12B (was 9B gguf, deleted)
+        "model": f"{WORKSPACE}/gemma-4-12B-it.litertlm",
         "port": 18083,
-        "direct_api": False,  # now served by litert-lm (LiteRT-LM), not llama.cpp
-        "litert": True,  # flag: launch via litert-lm CLI
-        "resident": True,  # DEEP storyteller - the rich voice (5.14 t/s, 131K ctx)
+        "direct_api": False,
+        "litert": True,
+        "resident": True,
         "mem_gb": 6.4,
-    },
-    "router": {
-        "model": f"{WORKSPACE}/qwen2.5-0.5b-instruct-q8_0.gguf",
-        "port": 18085,
-        "direct_api": False,
-        "resident": True,  # always needed for routing
-        "mem_gb": 0.6,
-    },
-    "reranker": {
-        "model": f"{WORKSPACE}/qwen3-reranker-0.6b-q8_0.gguf",
-        "port": 18086,
-        "direct_api": False,
-        "resident": True,  # always needed for reranking
-        "mem_gb": 0.6,
-    },
-    "embedder": {
-        "model": f"{WORKSPACE}/Qwen3-Embedding-0.6B-Q8_0.gguf",
-        "port": 18087,
-        "direct_api": False,
-        "resident": True,  # always needed for embeddings
-        "mem_gb": 0.6,
-        "extra_args": ["--embedding", "True"],  # Qwen3-embedding needs this
-    },
-    "nidum": {
-        "model": f"{WORKSPACE}/Nidum-Limitless-Gemma-2B-Q4_K_M.gguf",
-        "port": 18088,
-        "direct_api": True,
-        "script": "/root/gemma2b_direct.py",
-        "resident": True,  # fast storyteller for short beats (7.8 w/s)
-        "mem_gb": 1.5,
-    },
-    "precision": {
-        "model": f"{WORKSPACE}/Qwen2.5-Coder-7B-Instruct-abliterated-Q5_K_M.gguf",
-        "port": 18080,
-        "direct_api": False,
-        "resident": False,  # ON-DEMAND - big, loads only for precision work
-        "mem_gb": 5.1,
-    },
-    # --- SWARM: LiteRT-LM specialists (replaced the deleted gguf versions) ---
-    "huihui_e4b": {
-        "model": f"{WORKSPACE}/supergemma4-e4b-abliterated.litertlm",  # LiteRT-LM E4B
-        "port": 18082,
-        "direct_api": False,  # served by litert-lm
-        "litert": True,
-        "resident": False,  # on-demand specialist (dream/poetry) - fast storyteller
-        "mem_gb": 3.4,
-    },
-    "huihui_e2b": {
-        "model": f"{WORKSPACE}/Gemma-4-E2B-it-abliterated.litertlm",  # LiteRT-LM E2B
-        "port": 18089,
-        "direct_api": False,
-        "litert": True,
-        "resident": False,  # on-demand - fast E2B (10.48 t/s, 237 t/s prefill)
-        "mem_gb": 4.7,
-    },
-    "deepseek": {
-        "model": f"{WORKSPACE}/DeepSeek-R1-Distill-Qwen-7B_q4_block32_ekv4096.litertlm",  # R1 reasoning
-        "port": 18081,
-        "direct_api": False,
-        "litert": True,
-        "resident": False,  # on-demand - REASONING specialist (slow init 45s, [thought] trace)
-        "mem_gb": 4.2,
     },
 }
 

@@ -40,7 +40,7 @@ ROTATOR_LOG = STATE / "rotator.log"
 MONITOR = Path("/mnt/android/hermes-workspace/state/monitor/live.json")
 
 # Engine processes to rotate (cmdline fragments)
-ENGINE_MATCHES = ["gemma2_direct", "gemma2b_direct", "gemma4_direct", "llama_cpp.server"]
+ENGINE_MATCHES = ["litert-lm serve", "litert_lm_loader", "llama_cpp.server", "gemma2_direct", "gemma2b_direct", "gemma4_direct"]
 # Rotation schedule: sets of cores to cycle through
 CORE_SETS = ["0-5", "0-7"]
 # Prime cores (index 6,7) - if these are throttled, skip the "all cores" set

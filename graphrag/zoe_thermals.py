@@ -24,7 +24,7 @@ MONITOR = Path("/mnt/android/hermes-workspace/state/monitor/live.json")
 STATE = Path("/mnt/android/hermes-workspace/state/monitor/thermals.json")
 
 # Engine processes to manage (matched by these cmdline fragments)
-ENGINE_MATCHES = ["gemma2_direct", "gemma2b_direct", "gemma4_direct", "llama_cpp.server"]
+ENGINE_MATCHES = ["litert-lm serve", "litert_lm_loader", "llama_cpp.server", "gemma2_direct", "gemma2b_direct", "gemma4_direct"]
 # Cool cores (perf cores, lower max freq = less likely to overheat)
 COOL_CORES = "0-5"
 # Hot cores (prime Oryon cores - throttle first)
